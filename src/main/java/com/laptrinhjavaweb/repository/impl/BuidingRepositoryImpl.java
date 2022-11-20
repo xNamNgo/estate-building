@@ -20,7 +20,7 @@ import com.laptrinhjavaweb.utils.GetConnectionUtils;
 public class BuidingRepositoryImpl implements BuildingRepository {
 
 	@Override
-	public List<BuildingEntity> findBuilding(Map<String, String> params) {
+	public List<BuildingEntity> findBuilding(Map<String, String> params, List<String> renttypes) {
 		List<BuildingEntity> results = new ArrayList<>();
 		Connection conn = null;
 		Statement stmt = null;
@@ -34,7 +34,7 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 				StringBuilder joinQuery = new StringBuilder();
 				StringBuilder whereQuery = new StringBuilder();
 
-				buildingQueryWithJoin(params, joinQuery, whereQuery);
+				buildingQueryWithJoin(params, renttypes, joinQuery, whereQuery);
 				buildingQueryWithoutJoin(params, whereQuery);
 
 				sql.append(joinQuery).append(BuildingConstant.WHERE_ONE_EQUAL_ONE).append(whereQuery)
@@ -74,9 +74,7 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 
 	private void buildingQueryWithoutJoin(Map<String, String> params, StringBuilder whereQuery) {
 		String name = (String) params.get("name");
-//		Long floorArea = Long.parseLong(params.get("floorarea"));
 		String floorAreaClient = params.get("floorarea");
-		String districtIdClient = params.get("districtid");
 		String ward = params.get("ward");
 		String street = params.get("street");
 		String numberOfBasementClient = params.get("numberofbasement");
@@ -92,10 +90,7 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 			Long floorArea = Long.parseLong(params.get("floorarea"));
 			whereQuery.append(" and floorarea = " + floorArea);
 		}
-		if (districtIdClient != null) {
-			Long districtId = Long.parseLong(params.get("districtid"));
-			whereQuery.append(" and districtid = " + districtId);
-		}
+
 		if (ward != null) {
 			whereQuery.append(" and ward like '%" + ward + "%'");
 		}
@@ -122,53 +117,50 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 		}
 	}
 
-	private void buildingQueryWithJoin(Map<String, String> params, StringBuilder joinQuery, StringBuilder whereQuery) {
-		String strRentType = params.get("renttype");
-		String[] rentTypes = null;
-		String staffName = params.get("staffname");
+	private void buildingQueryWithJoin(Map<String, String> params, List<String> renttypes, StringBuilder joinQuery,
+			StringBuilder whereQuery) {
+		String district = params.get("district");
+		String staffIdClient = params.get("staffid");
 		String phone = params.get("phone");
 		String fromRentAreaClient = params.get("fromrentarea");
 		String toRentAreaClient = params.get("torentarea");
 
-		if (strRentType != null) {
-			rentTypes = strRentType.split(",");
+		if (district != null) {
+			joinQuery.append(" join district on district.id = b.districtid ");
+			whereQuery.append(" and district.code = '" + district + "'");
 		}
 
 		if (fromRentAreaClient != null || toRentAreaClient != null) {
 			joinQuery.append(" join rentarea on rentarea.buildingid = b.id");
 			if (fromRentAreaClient != null) {
-				Long fromRentArea = Long.parseLong(params.get("fromrentarea"));
+				Long fromRentArea = Long.parseLong(fromRentAreaClient);
 				whereQuery.append(" and rentarea.value >= " + fromRentArea);
 			}
 			if (toRentAreaClient != null) {
-				Long toRentArea = Long.parseLong(params.get("torentarea"));
+				Long toRentArea = Long.parseLong(toRentAreaClient);
 				whereQuery.append(" and rentarea.value <= " + toRentArea);
 			}
 		}
 
-		if (rentTypes != null) {
+		if (renttypes != null) {
 			joinQuery.append(" join buildingrenttype bRenttype on bRenttype.buildingid = b.id")
 					.append(" join renttype on bRenttype.renttypeid = renttype.id");
-			whereQuery.append(" and (renttype.code = '" + rentTypes[0] + "'");
-			for (int i = 1; i < rentTypes.length; i++) {
-				whereQuery.append(" or renttype.code = '" + rentTypes[i] + "'");
+			whereQuery.append(" and (renttype.code = '" + renttypes.get(0) + "'");
+			for (int i = 1; i < renttypes.size(); i++) {
+				whereQuery.append(" or renttype.code = '" + renttypes.get(i) + "'");
 			}
 			whereQuery.append(")");
 		}
 
-		if (staffName != null || phone != null) {
+		if (staffIdClient != null || phone != null) {
+			Long staffId = Long.parseLong(staffIdClient);
 			joinQuery.append(" join assignmentbuilding aBuilding on aBuilding.buildingid = b.id")
-					.append(" join user on user.id = aBuilding.staffid")
-					.append(" join user_role on user_role.userid = user.id")
-					.append(" join role on role.id = user_role.roleid");
-			if (staffName != null) {
-				whereQuery.append(" and user.fullname like '%" + staffName + "%'").append(" and role.code = 'staff'");
-			}
-			if (phone != null) {
-				whereQuery.append(" and user.phone = " + phone);
-			}
+					.append(" join user on user.id = aBuilding.staffid");
+			whereQuery.append(" and user.id = " + staffId);
 		}
-
+		if (phone != null) {
+			whereQuery.append(" and user.phone = " + phone);
+		}
 	}
 
 	// lấy tên loại tòa nhà

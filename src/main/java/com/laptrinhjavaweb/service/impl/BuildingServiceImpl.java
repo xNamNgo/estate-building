@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.laptrinhjavaweb.converter.BuildingConverter;
 import com.laptrinhjavaweb.model.respone.BuildingSearchRespone;
 import com.laptrinhjavaweb.repository.BuildingRenttypeRepository;
 import com.laptrinhjavaweb.repository.BuildingRepository;
@@ -35,22 +36,17 @@ public class BuildingServiceImpl implements BuildingService {
 	UserRepository userRepository;
 
 	@Override
-	public List<BuildingSearchRespone> findBuilding(Map<String, String> params) {
+	public List<BuildingSearchRespone> findBuilding(Map<String, String> params,List<String> renttypes) {
 		List<BuildingSearchRespone> results = new ArrayList<>();
-		List<BuildingEntity> buildingEntities = buildingRepository.findBuilding(params);
+		List<BuildingEntity> buildingEntities = buildingRepository.findBuilding(params,renttypes);
 		for (BuildingEntity entity : buildingEntities) {
-			BuildingSearchRespone dto = new BuildingSearchRespone();
-			dto.setId(entity.getId());
-			dto.setName(entity.getName());
-			dto.setFloorArea(entity.getFloorArea());
-			dto.setNumberOfBasement(entity.getNumberOfBasement());
-			dto.setDirection(entity.getDirection());
-			dto.setLevel(entity.getLevel());
-			dto.setRentPrice(entity.getRentPrice());
-
+			BuildingSearchRespone dto = BuildingConverter.convertToDTO(entity);
+			
 			// address
-			String address = getDistrictNameById(entity.getDistrictId()) + " - " + entity.getWard() + " - "
-					+ entity.getStreet();
+			String street = entity.getStreet();
+			String ward = entity.getWard();
+			String districtName = getDistrictNameById(entity.getDistrictId());
+			String address = street + " - " + ward + " - " + districtName;
 			dto.setAddress(address);
 
 			// rentarea

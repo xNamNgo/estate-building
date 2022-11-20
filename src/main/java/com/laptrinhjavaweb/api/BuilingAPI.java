@@ -22,8 +22,8 @@ public class BuilingAPI {
 	BuildingService buildingService;
 
 	@GetMapping
-	public List<BuildingSearchRespone> findBuilding(@RequestParam Map<String, String> params) {
-		List<BuildingSearchRespone> results = buildingService.findBuilding(params);
+	public List<BuildingSearchRespone> findBuilding(@RequestParam Map<String, String> params,@RequestParam(required = false) List<String> renttypes) {
+		List<BuildingSearchRespone> results = buildingService.findBuilding(params,renttypes);
 		return results;
 	}
 }

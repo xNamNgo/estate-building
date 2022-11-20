@@ -18,7 +18,7 @@ public class UserRepositoryImpl implements UserRepository{
 	@Override
 	public List<UserEntity> getStaffInfoByBuildingId(Long buildingId) {
 
-		List<UserEntity> staffInfos = new ArrayList<>();
+		List<UserEntity> listStaff = new ArrayList<>();
 
 		Connection conn;
 		try {
@@ -33,9 +33,9 @@ public class UserRepositoryImpl implements UserRepository{
 				UserEntity userEntity = new UserEntity();
 				userEntity.setFullName(rs.getString("user.fullname"));
 				userEntity.setPhone(rs.getString("user.phone"));
-				staffInfos.add(userEntity);
+				listStaff.add(userEntity);
 			}
-			return staffInfos;
+			return listStaff;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
