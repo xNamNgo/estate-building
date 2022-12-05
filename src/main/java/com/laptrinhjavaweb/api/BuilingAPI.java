@@ -22,7 +22,7 @@ public class BuilingAPI {
 	BuildingService buildingService;
 
 	@GetMapping
-	public List<BuildingSearchRespone> findBuilding(@RequestParam Map<String, String> params,@RequestParam(required = false) List<String> renttypes) {
+	public List<BuildingSearchRespone> findBuilding(@RequestParam Map<String, Object> params,@RequestParam(required = false) List<String> renttypes) {
 		List<BuildingSearchRespone> results = buildingService.findBuilding(params,renttypes);
 		return results;
 	}
