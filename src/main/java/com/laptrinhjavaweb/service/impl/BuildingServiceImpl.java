@@ -36,7 +36,7 @@ public class BuildingServiceImpl implements BuildingService {
 	UserRepository userRepository;
 
 	@Override
-	public List<BuildingSearchRespone> findBuilding(Map<String, String> params,List<String> renttypes) {
+	public List<BuildingSearchRespone> findBuilding(Map<String, Object> params,List<String> renttypes) {
 		List<BuildingSearchRespone> results = new ArrayList<>();
 		List<BuildingEntity> buildingEntities = buildingRepository.findBuilding(params,renttypes);
 		for (BuildingEntity entity : buildingEntities) {

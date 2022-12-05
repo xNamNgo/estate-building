@@ -6,5 +6,5 @@ import java.util.Map;
 import com.laptrinhjavaweb.model.respone.BuildingSearchRespone;
 
 public interface BuildingService {
-	public List<BuildingSearchRespone> findBuilding(Map<String,String> params,List<String> renttypes);
+	public List<BuildingSearchRespone> findBuilding(Map<String, Object> params,List<String> renttypes);
 }
