@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.laptrinhjavaweb.repository.entity.BuildingEntity;
 
 public interface BuildingRepository {
-	public List<BuildingEntity> findBuilding(Map<String,String> params,List<String> renttypes);
+	public List<BuildingEntity> findBuilding(Map<String, Object> params,List<String> renttypes);
 	public String getBuildingRenttype(Long buildingId);
 
 }
