@@ -137,7 +137,7 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 //				Long fromRentArea = Long.parseLong(fromRentAreaClient);
 				whereQuery.append(" and rentarea.value >= " + fromRentArea);
 			}
-			if (toRentArea!= null) {
+			if (toRentArea != null) {
 //				Long toRentArea = Long.parseLong(toRentAreaClient);
 				whereQuery.append(" and rentarea.value <= " + toRentArea);
 			}
@@ -146,11 +146,18 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 		if (renttypes != null) {
 			joinQuery.append(" join buildingrenttype bRenttype on bRenttype.buildingid = b.id")
 					.append(" join renttype on bRenttype.renttypeid = renttype.id");
-			whereQuery.append(" and (renttype.code = '" + renttypes.get(0) + "'");
-			for (int i = 1; i < renttypes.size(); i++) {
-				whereQuery.append(" or renttype.code = '" + renttypes.get(i) + "'");
+//			whereQuery.append(" and (renttype.code = '" + renttypes.get(0) + "'");
+//			for (int i = 1; i < renttypes.size(); i++) {
+//				whereQuery.append(" or renttype.code = '" + renttypes.get(i) + "'");
+//			}
+//			whereQuery.append(")");
+
+			List<String> split = new ArrayList<>();
+			for (String item : renttypes) {
+				split.add("'"+item+"'");
 			}
-			whereQuery.append(")");
+			whereQuery.append(" and renttype.code in (" + String.join(",", split) + ")");
+			
 		}
 
 		if (staffId != null || phone != null) {
