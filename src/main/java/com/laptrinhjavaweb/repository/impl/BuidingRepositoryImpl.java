@@ -16,12 +16,15 @@ import com.laptrinhjavaweb.repository.BuildingRepository;
 import com.laptrinhjavaweb.repository.entity.BuildingEntity;
 import com.laptrinhjavaweb.utils.GetConnectionUtils;
 import com.laptrinhjavaweb.utils.MapUtils;
+import com.laptrinhjavaweb.utils.NumberUtils;
+import com.laptrinhjavaweb.utils.StringUtils;
 
 @Repository
 public class BuidingRepositoryImpl implements BuildingRepository {
 
 	@Override
-	public List<BuildingEntity> findBuilding(Map<String, Object> params, List<String> renttypes) {
+	public List<BuildingEntity> findBuilding(Map<String, Object> params,
+			List<String> renttypes) {
 		List<BuildingEntity> results = new ArrayList<>();
 		Connection conn = null;
 		Statement stmt = null;
@@ -35,11 +38,11 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 				StringBuilder joinQuery = new StringBuilder();
 				StringBuilder whereQuery = new StringBuilder();
 
-				buildingQueryWithJoin(params, renttypes, joinQuery, whereQuery);
 				buildingQueryWithoutJoin(params, whereQuery);
+				buildingQueryWithJoin(params, renttypes, joinQuery, whereQuery);
 
-				sql.append(joinQuery).append(BuildingConstant.WHERE_ONE_EQUAL_ONE).append(whereQuery)
-						.append(BuildingConstant.GROUP_BY_BUILDING_ID);
+				sql.append(joinQuery).append(BuildingConstant.WHERE_ONE_EQUAL_ONE)
+						.append(whereQuery).append(BuildingConstant.GROUP_BY_BUILDING_ID);
 			}
 
 			String sqlDebug = sql.toString();
@@ -73,53 +76,39 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 		return null;
 	}
 
-	private void buildingQueryWithoutJoin(Map<String, Object> params, StringBuilder whereQuery) {
-		String name = MapUtils.getObject(params, "name", String.class);
-		Long floorArea = MapUtils.getObject(params, "floorarea", Long.class);
-		String ward = MapUtils.getObject(params, "ward", String.class);
-		String street = MapUtils.getObject(params, "street", String.class);
-		Long numberOfBasement = MapUtils.getObject(params, "numberofbasement", Long.class);
-		String direction = MapUtils.getObject(params, "direction", String.class);
-		String level = MapUtils.getObject(params, "level", String.class);
-		Long fromRentPrice = MapUtils.getObject(params, "fromrentprice", Long.class);
-		Long toRentPrice = MapUtils.getObject(params, "torentprice", Long.class);
+	private void buildingQueryWithoutJoin(Map<String, Object> params,
+			StringBuilder whereQuery) {
+		for (Map.Entry<String, Object> entry : params.entrySet()) {
+			if (!entry.getKey().equals("rentprice") && !entry.getKey().equals("district")
+					&& !entry.getKey().equals("staffId")
+					&& !entry.getKey().equals("phone")
+					&& !entry.getKey().equals("fromrentarea")
+					&& !entry.getKey().equals("torentarea")) {
+				String value = entry.getValue().toString();
+				if (NumberUtils.isInteger(value)) {
+					whereQuery.append(
+							" and b." + entry.getKey() + " = " + Integer.parseInt(value));
+				}
+				if (!StringUtils.isNullOrEmpty(value)) {
+					whereQuery.append(
+							" and b." + entry.getKey() + " like '%" + value + "%'");
+				}
+			}
+		}
 
-		if (name != null) {
-			whereQuery.append(" and b.name like '%" + name + "%'");
-		}
-		if (floorArea != null) {
-//			Long floorArea = Long.parseLong(params.get("floorarea"));
-			whereQuery.append(" and floorarea = " + floorArea);
-		}
-
-		if (ward != null) {
-			whereQuery.append(" and ward like '%" + ward + "%'");
-		}
-		if (street != null) {
-			whereQuery.append(" and street like '%" + street + "%'");
-		}
-		if (numberOfBasement != null) {
-//			Long numberOfBasement = Long.parseLong(params.get("numberofbasement"));
-			whereQuery.append(" and numberofbasement = " + numberOfBasement);
-		}
-		if (direction != null) {
-			whereQuery.append(" and direction like '%" + direction + "%'");
-		}
-		if (level != null) {
-			whereQuery.append(" and level like '%" + level + "%'");
-		}
+//		Trường hợp đặc biệt mình tự custom.
+		Long fromRentPrice = MapUtils.getObject(params, "from-rent-price", Long.class);
+		Long toRentPrice = MapUtils.getObject(params, "to-rent-price", Long.class);
 		if (fromRentPrice != null) {
-//			Long fromRentPrice = Long.parseLong(params.get("fromrentprice"));
 			whereQuery.append(" and rentprice >= " + fromRentPrice);
 		}
 		if (toRentPrice != null) {
-//			Long toRentPrice = Long.parseLong(params.get("torentprice"));
 			whereQuery.append(" and rentprice <= " + toRentPrice);
 		}
 	}
 
-	private void buildingQueryWithJoin(Map<String, Object> params, List<String> renttypes, StringBuilder joinQuery,
-			StringBuilder whereQuery) {
+	private void buildingQueryWithJoin(Map<String, Object> params, List<String> renttypes,
+			StringBuilder joinQuery, StringBuilder whereQuery) {
 		String district = MapUtils.getObject(params, "district", String.class);
 		Long staffId = MapUtils.getObject(params, "staffid", Long.class);
 		String phone = MapUtils.getObject(params, "phone", String.class);
@@ -144,7 +133,8 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 		}
 
 		if (renttypes != null) {
-			joinQuery.append(" join buildingrenttype bRenttype on bRenttype.buildingid = b.id")
+			joinQuery.append(
+					" join buildingrenttype bRenttype on bRenttype.buildingid = b.id")
 					.append(" join renttype on bRenttype.renttypeid = renttype.id");
 //			whereQuery.append(" and (renttype.code = '" + renttypes.get(0) + "'");
 //			for (int i = 1; i < renttypes.size(); i++) {
@@ -154,15 +144,16 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 
 			List<String> split = new ArrayList<>();
 			for (String item : renttypes) {
-				split.add("'"+item+"'");
+				split.add("'" + item + "'");
 			}
 			whereQuery.append(" and renttype.code in (" + String.join(",", split) + ")");
-			
+
 		}
 
 		if (staffId != null || phone != null) {
 //			Long staffId = Long.parseLong(staffIdClient);
-			joinQuery.append(" join assignmentbuilding aBuilding on aBuilding.buildingid = b.id")
+			joinQuery.append(
+					" join assignmentbuilding aBuilding on aBuilding.buildingid = b.id")
 					.append(" join user on user.id = aBuilding.staffid");
 			whereQuery.append(" and user.id = " + staffId);
 		}
@@ -179,7 +170,8 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 			Statement stmt = conn.createStatement();
 
 			String sql = "select * from buildingrenttype as bRenttype "
-					+ "join renttype on bRenttype.renttypeid = renttype.id " + "where buildingid = " + buildingId;
+					+ "join renttype on bRenttype.renttypeid = renttype.id "
+					+ "where buildingid = " + buildingId;
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				result.add(rs.getString("renttype.name"));
