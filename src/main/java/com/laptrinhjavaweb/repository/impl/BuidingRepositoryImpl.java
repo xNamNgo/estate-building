@@ -79,7 +79,9 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 	private void buildingQueryWithoutJoin(Map<String, Object> params,
 			StringBuilder whereQuery) {
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
-			if (!entry.getKey().equals("rentprice") && !entry.getKey().equals("district")
+			if (!entry.getKey().equals("from-rent-price")
+					&& !entry.getKey().equals("to-rent-price")
+					&& !entry.getKey().equals("district")
 					&& !entry.getKey().equals("staffId")
 					&& !entry.getKey().equals("phone")
 					&& !entry.getKey().equals("fromrentarea")
@@ -120,14 +122,15 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 			whereQuery.append(" and district.code = '" + district + "'");
 		}
 
+		// đây là 1 case đặc biệt ,chỉ cần client có 1 trong bất kỳ value mà rentarea có thì 
+		// ta có thể sử dụng từ khoá EXISTS và SubQuery (select lồng select )
+		// "and exists (select * from rentarea where rentarea.buildingid = b.id where ra.value >= xx and ra.value <= xxx)"
 		if (fromRentArea != null || toRentArea != null) {
-			joinQuery.append(" join rentarea on rentarea.buildingid = b.id");
+			joinQuery.append(" join rentarea on rentarea.buildingid = b.id");s
 			if (fromRentArea != null) {
-//				Long fromRentArea = Long.parseLong(fromRentAreaClient);
 				whereQuery.append(" and rentarea.value >= " + fromRentArea);
 			}
 			if (toRentArea != null) {
-//				Long toRentArea = Long.parseLong(toRentAreaClient);
 				whereQuery.append(" and rentarea.value <= " + toRentArea);
 			}
 		}
@@ -136,12 +139,6 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 			joinQuery.append(
 					" join buildingrenttype bRenttype on bRenttype.buildingid = b.id")
 					.append(" join renttype on bRenttype.renttypeid = renttype.id");
-//			whereQuery.append(" and (renttype.code = '" + renttypes.get(0) + "'");
-//			for (int i = 1; i < renttypes.size(); i++) {
-//				whereQuery.append(" or renttype.code = '" + renttypes.get(i) + "'");
-//			}
-//			whereQuery.append(")");
-
 			List<String> split = new ArrayList<>();
 			for (String item : renttypes) {
 				split.add("'" + item + "'");
@@ -151,7 +148,6 @@ public class BuidingRepositoryImpl implements BuildingRepository {
 		}
 
 		if (staffId != null || phone != null) {
-//			Long staffId = Long.parseLong(staffIdClient);
 			joinQuery.append(
 					" join assignmentbuilding aBuilding on aBuilding.buildingid = b.id")
 					.append(" join user on user.id = aBuilding.staffid");
