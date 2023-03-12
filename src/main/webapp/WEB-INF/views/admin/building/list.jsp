@@ -2,6 +2,7 @@
 <%@ include file="/common/taglib.jsp" %>
 <c:url var="buildingListUrl" value="/admin/building-list"/>
 <c:url var="buildingAPI" value="/api/building"/>
+<c:url var="assignmentAPI" value="/api/assignment-building"/>
 <html>
 <head>
     <title>Title</title>
@@ -379,7 +380,7 @@
         var data;
         $.ajax({
             type: "POST",
-            url: "localhost:8081/api/assignment-building/",
+            url: "${assignmentAPI}",
             data: JSON.stringify(data),
             dataType: "json",
             contentType: "application/json",
