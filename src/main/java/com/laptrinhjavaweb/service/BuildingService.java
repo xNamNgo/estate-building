@@ -1,6 +1,8 @@
 package com.laptrinhjavaweb.service;
 
 import com.laptrinhjavaweb.dto.BuildingSearchDTO;
+import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
+import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
 import com.laptrinhjavaweb.dto.respone.BuildingResponeDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 
@@ -19,9 +21,11 @@ public interface BuildingService {
 
     void save(BuildingResponeDTO buildingResponeDTO);
 
-    void delete(List<Long> idList);
+    void delete(BuildingListRequestDTO buildingListRequestDTO);
 
     BuildingResponeDTO findById(Long id);
+
+    ResponeDTO saveAssignmentBuilding(AssignmentBuildingRequestDTO request);
 
 
 }

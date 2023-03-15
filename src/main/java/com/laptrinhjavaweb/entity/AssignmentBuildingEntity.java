@@ -16,6 +16,15 @@ public class AssignmentBuildingEntity extends BaseEntity {
     @JoinColumn(name = "building_id")
     private BuildingEntity building;
 
+    public AssignmentBuildingEntity() {
+
+    }
+
+    public AssignmentBuildingEntity(UserEntity staff, BuildingEntity building) {
+        this.staff = staff;
+        this.building = building;
+    }
+
     public UserEntity getStaff() {
         return staff;
     }
@@ -31,4 +40,6 @@ public class AssignmentBuildingEntity extends BaseEntity {
     public void setBuilding(BuildingEntity building) {
         this.building = building;
     }
+
+
 }

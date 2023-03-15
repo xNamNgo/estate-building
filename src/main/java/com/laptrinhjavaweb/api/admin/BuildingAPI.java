@@ -1,5 +1,7 @@
 package com.laptrinhjavaweb.api.admin;
 
+import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
+import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
 import com.laptrinhjavaweb.dto.respone.BuildingResponeDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 import com.laptrinhjavaweb.service.BuildingService;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController(value = "buildingAPIOfAdmin")
 @RequestMapping("/api/building")
@@ -34,16 +37,32 @@ public class BuildingAPI {
 
     @DeleteMapping
     @Transactional
-    public ResponseEntity<Void> deleteBuliding(@RequestBody List<Long> idList) {
-        buildingService.delete(idList);
+    // TODO : dưới server nhận JSON là 1 kểu dạng key-value , để list sẽ bị lỗi .
+    public ResponseEntity<Void> deleteBuilding(@RequestBody
+                                               BuildingListRequestDTO buildingListRequestDTO) {
+        buildingService.delete(buildingListRequestDTO);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping
     @Transactional
-    public BuildingResponeDTO update(@RequestBody BuildingResponeDTO updateBuilding) {
+    public BuildingResponeDTO update(
+            @RequestBody BuildingResponeDTO updateBuilding) {
         buildingService.save(updateBuilding);
         return updateBuilding;
+    }
+
+    /*
+     *  Nhận các id "checked"
+     * sau đó xóa danh sách id "checked" hiện tại
+     * save lại id mới từ client .
+     * */
+    @PostMapping("/assignment-building")
+    @Transactional
+    public ResponeDTO saveAssignmentBuilding(
+            @RequestBody AssignmentBuildingRequestDTO request) {
+        ResponeDTO result = buildingService.saveAssignmentBuilding(request);
+        return result;
     }
 
 

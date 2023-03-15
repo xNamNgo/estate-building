@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface AssignmentBuildingRepository extends JpaRepository<AssignmentBuildingEntity, Long> {
     List<AssignmentBuildingEntity> findByBuildingId(Long buildingId);
+    void deleteByBuildingId(Long buildingId);
 
 }

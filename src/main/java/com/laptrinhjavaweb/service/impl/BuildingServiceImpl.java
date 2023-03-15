@@ -3,6 +3,8 @@ package com.laptrinhjavaweb.service.impl;
 import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
 import com.laptrinhjavaweb.converter.BuildingConverter;
 import com.laptrinhjavaweb.dto.BuildingSearchDTO;
+import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
+import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
 import com.laptrinhjavaweb.dto.respone.BuildingResponeDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 import com.laptrinhjavaweb.dto.respone.StaffResponeDTO;
@@ -19,7 +21,6 @@ import com.laptrinhjavaweb.repository.UserRepository;
 import com.laptrinhjavaweb.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,22 +73,29 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
 
+    /*
+     * - Lấy danh sách tất cả nhân viên
+     * - Lấy danh sách nhân viên đang quản lý tòa nhà id
+     * - Kiểm tra nhân viên có nằm trong danh sách quản lý không - nếu có thì "checked"
+     * */
     @Override
     public ResponeDTO getListStaff(Long buildingId) {
-        // danh sách nhân viên đang quản lý tòa nhà id .
-        List<AssignmentBuildingEntity> assignmentBuildingEntityList = assignmentBuildingRepository.findByBuildingId(buildingId);
-
         // danh sách tất cả nhân viên
         List<UserEntity> userEntityList = userRepository.findByStatusAndRoles_Code(1, "STAFF");
 
+        // danh sách nhân viên đang quản lý tòa nhà id .
+        List<AssignmentBuildingEntity> assignmentBuildingEntityList = assignmentBuildingRepository.findByBuildingId(buildingId);
+
+        // result
         List<StaffResponeDTO> data = new ArrayList<>();
 
+        // output ở client là 1 danh sách nhân viên ,nhân viên nào quản lý thì "checked"
         for (UserEntity user : userEntityList) {
             StaffResponeDTO staffResponeDTO = new StaffResponeDTO();
             staffResponeDTO.setStaffId(user.getId());
             staffResponeDTO.setFullName(user.getFullName());
 
-            // kiểm tra user đã được giao tòa nhà hay chưa
+            // user được giao tòa nhà thì checked
             boolean isAssigned = false;
             for (AssignmentBuildingEntity assignment : assignmentBuildingEntityList) {
                 if (user.getId() == assignment.getStaff().getId()) {
@@ -95,9 +103,10 @@ public class BuildingServiceImpl implements BuildingService {
                     break;
                 }
             }
+
+            // check
             staffResponeDTO.setChecked(isAssigned ? "checked" : "");
 
-            // thêm vào data list.
             data.add(staffResponeDTO);
         }
         return new ResponeDTO(data, "success", "");
@@ -119,21 +128,44 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     @Override
-    public void delete(List<Long> idList){
-        // xóa bảng rent_area trước rồi mới xóa bảng building
-        for(Long id : idList){
+    public void delete(BuildingListRequestDTO buildingListRequestDTO) {
+        // xóa bảng FK trước rồi mới xóa bảng building
+        for (Long id : buildingListRequestDTO.getIdList()) {
+            assignmentBuildingRepository.deleteByBuildingId(id);
             rentAreaRepository.deleteByBuilding_Id(id);
             buildingRepository.deleteById(id);
         }
     }
 
     @Override
-    public BuildingResponeDTO findById(Long id){
+    public BuildingResponeDTO findById(Long id) {
         BuildingResponeDTO result = new BuildingResponeDTO();
-        if(id != null){
-            result = buildingConverter.convertToDTO(buildingRepository.findById(id));
+        if (id != null) {
+            result = buildingConverter.convertToDTO(buildingRepository.getOne(id));
         }
         return result;
+    }
+
+    /**
+     * Giao tòa nhà cho nhân viên quản lý
+     * @param request
+     * - Ở client sẽ gửi về cho server :
+     * + "id" tòa nhà muốn giao
+     * + "list id" nhân viên đã checked vào checkbox
+     * @return
+     */
+    public ResponeDTO saveAssignmentBuilding(AssignmentBuildingRequestDTO request) {
+        Long buildingId = request.getBuildingId();
+        List<Long> staffIdList = request.getStaffIdList();
+        BuildingEntity buildingEntity = buildingRepository.getOne(buildingId);
+
+        assignmentBuildingRepository.deleteByBuildingId(buildingId);
+        for (Long id : staffIdList) {
+            UserEntity user = userRepository.getOne(id);
+            AssignmentBuildingEntity result = new AssignmentBuildingEntity(user, buildingEntity);
+            assignmentBuildingRepository.save(result);
+        }
+        return new ResponeDTO(null,"success","Giao tòa nhà thành công!");
     }
 
 
