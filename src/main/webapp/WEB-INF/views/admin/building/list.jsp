@@ -2,7 +2,7 @@
 <%@ include file="/common/taglib.jsp" %>
 <c:url var="buildingListUrl" value="/admin/building-list"/>
 <c:url var="buildingAPI" value="/api/building"/>
-<c:url var="assignmentAPI" value="/api/assignment-building"/>
+<c:url var="assignmentAPI" value="/api/building/assignment-building"/>
 <html>
 <head>
     <title>Title</title>
@@ -255,10 +255,10 @@
 
         <div class="row" style="margin-top: 60px; margin-right: 15px; margin-left: 15px">
             <div class="col-xs-12">
-                <table id="simple-table" class="table table-striped table-bordered table-hover">
+                <table id="buildingList" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th><input type="checkbox"></th>
+                        <th></th>
                         <th>Ngày</th>
                         <th>Tên sản phẩm</th>
                         <th>Địa chỉ</th>
@@ -276,7 +276,8 @@
                     <tbody>
                     <c:forEach var="buildingListItem" items="${buildings}">
                         <tr>
-                            <td><input type="checkbox" class="selectOne" value="${buildingListItem.id}"></td>
+                            <td><input type="checkbox" value="${buildingListItem.id}"
+                                       id="checkbox_${buildingListItem.id}"></td>
                             <td>${buildingListItem.modifiedDate}</td>
                             <td>${buildingListItem.name}</td>
                             <td>${buildingListItem.address}</td>
@@ -329,6 +330,7 @@
 
 
                     </tbody>
+                    <input type="hidden" id="buildingId" name="buildingId" value="">
                 </table>
             </div>
             <div class="modal-footer">
@@ -343,6 +345,8 @@
     function assignmentBuilding(buildingId) {
         openModalAssignmentBuilding();
         loadStaff(buildingId);
+        $("#buildingId").val(buildingId); // set value cho buildingId
+        console.log("building id : " + $("#buildingId").val());
     }
 
     function openModalAssignmentBuilding() {
@@ -362,7 +366,7 @@
                 var row = '';
                 $.each(response.data, function (index, item) {
                     row += '<tr>';
-                    row += '<td class ="text-center">' + '<input type="checkbox" value = ' + item.staffId + ' id ="checkbox_"' + item.staffId + ' class ="check-box-element" ' + item.checked + '/></td>';
+                    row += '<td class ="text-center">' + '<input type="checkbox" value = "' + item.staffId + '" id ="checkbox_' + item.staffId + '" class ="check-box-assignment" ' + item.checked + '/></td>';
                     row += '<td class="text-center">' + item.fullName + '</td>';
                     row += '</tr>';
                 });
@@ -377,7 +381,20 @@
 
     $("#btnAssignBuilding").click(function (e) {
         e.preventDefault();
-        var data;
+        var data = {};
+        // buildingId đang là 1 hidden input , cho nên ta get value bằng cách này .
+        data['buildingId'] = $("#buildingId").val();
+        // $('#staffList').find('tbody input[type=checkbox]:checked');
+        var staffIdList = $('#staffList').find('tbody input[type=checkbox]:checked').map(function (){
+            return $(this).val(); // đứng ở thằng modal - lấy tất cả value của checkbox có "checked"
+        }).get();
+        data['staffIdList'] = staffIdList;
+
+        // call api
+        assignStaff(data);
+    });
+
+    function assignStaff(data){
         $.ajax({
             type: "POST",
             url: "${assignmentAPI}",
@@ -392,40 +409,27 @@
                 console.log(response);
             },
         });
-    });
-    $("#btnSearch").click(function (e) {
-        // ngăn chặn việc submit vào link hiện tại, thay vì link khác
-        // action="192.168,../building-list"
-        // nhưng không khai báo prevent default thì nó sẽ gọi trang hiện tại là admin/building-list
-        e.preventDefault();
-        $('#listForm').submit();
-    });
-
-    var checkBoxList = [];
-    $(".selectOne").click(function (e) {
-        if (e.target.checked) {
-            checkBoxList.push(e.target.value);
-        } else {
-            var index = checkBoxList.indexOf(e.target.value);
-            if (index > -1) {
-                checkBoxList.splice(index, 1);
-            }
-        }
-
-        var deleteButton = document.querySelector("#btnDelete");
-        if (checkBoxList.length > 0) {
-            deleteButton.removeAttribute("disabled");
-        } else {
-            deleteButton.setAttribute("disabled", "");
-        }
-        console.log(checkBoxList);
-    });
+    }
 
     $("#btnDelete").click(function (e) {
+        e.preventDefault();
+        var data = {};
+
+        // Lấy danh sách id có checkbox là checked
+        var idList = $('#buildingList').find('tbody input[type=checkbox]:checked').map(function (){
+            return $(this).val(); // đứng ở thằng modal - lấy tất cả value của checkbox có "checked"
+        }).get();
+        data["idList"] = idList;
+
+        // call api
+        deleteBuilding(data);
+    });
+
+    function deleteBuilding(data){
         $.ajax({
             type: "DELETE",
             url: "${buildingAPI}",
-            data: JSON.stringify(checkBoxList),
+            data: JSON.stringify(data),
             dataType: "json",
             contentType: "application/json",
             success: function (response) {
@@ -437,12 +441,20 @@
                 console.log(response);
             },
         });
-    });
+    }
 
     function updateBuilding(buildingId) {
         var url = "/admin/building-edit?building_id=" + buildingId;
         window.location.href = url;
     }
+
+    $("#btnSearch").click(function (e) {
+        // ngăn chặn việc submit vào link hiện tại, thay vì link khác
+        // action="192.168,../building-list"
+        // nhưng không khai báo prevent default thì nó sẽ gọi trang hiện tại là admin/building-list
+        e.preventDefault();
+        $('#listForm').submit();
+    });
 
 
 </script>

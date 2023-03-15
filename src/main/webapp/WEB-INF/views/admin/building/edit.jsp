@@ -31,7 +31,6 @@
 
             </ul>
         </div>
-
         <br class="page-content"/>
 
         <!-- /.page-header -->
@@ -301,14 +300,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group" hidden>
-                            <label for="name" class="col-sm-1 control-label">ID tòa nhà</label>
-                            <div class="col-sm-11">
-                                <input type="text" class="form-control" id="id" value="${building.id}"
-                                       name="id"/>
-                            </div>
-                        </div>
-
+                        <input type="hidden" id="id" name="id" value="${building.id}">
 
                     </form>
                     <!-- button thêm/hủy -->
