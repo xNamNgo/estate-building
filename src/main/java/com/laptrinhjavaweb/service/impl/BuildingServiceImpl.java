@@ -8,13 +8,11 @@ import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
 import com.laptrinhjavaweb.dto.respone.BuildingResponeDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 import com.laptrinhjavaweb.dto.respone.StaffResponeDTO;
-import com.laptrinhjavaweb.entity.AssignmentBuildingEntity;
 import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.RentAreaEntity;
 import com.laptrinhjavaweb.entity.UserEntity;
 import com.laptrinhjavaweb.enums.DistrictEnum;
 import com.laptrinhjavaweb.enums.TypeEnum;
-import com.laptrinhjavaweb.repository.AssignmentBuildingRepository;
 import com.laptrinhjavaweb.repository.BuildingRepository;
 import com.laptrinhjavaweb.repository.RentAreaRepository;
 import com.laptrinhjavaweb.repository.UserRepository;
@@ -31,8 +29,6 @@ import java.util.Map;
 public class BuildingServiceImpl implements BuildingService {
     @Autowired
     BuildingRepository buildingRepository;
-    @Autowired
-    AssignmentBuildingRepository assignmentBuildingRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -84,7 +80,7 @@ public class BuildingServiceImpl implements BuildingService {
         List<UserEntity> userEntityList = userRepository.findByStatusAndRoles_Code(1, "STAFF");
 
         // danh sách nhân viên đang quản lý tòa nhà id .
-        List<AssignmentBuildingEntity> assignmentBuildingEntityList = assignmentBuildingRepository.findByBuildingId(buildingId);
+//        List<AssignmentBuildingEntity> assignmentBuildingEntityList = assignmentBuildingRepository.findByBuildingId(buildingId);
 
         // result
         List<StaffResponeDTO> data = new ArrayList<>();
@@ -97,12 +93,12 @@ public class BuildingServiceImpl implements BuildingService {
 
             // user được giao tòa nhà thì checked
             boolean isAssigned = false;
-            for (AssignmentBuildingEntity assignment : assignmentBuildingEntityList) {
-                if (user.getId() == assignment.getStaff().getId()) {
-                    isAssigned = true;
-                    break;
-                }
-            }
+//            for (AssignmentBuildingEntity assignment : assignmentBuildingEntityList) {
+//                if (user.getId() == assignment.getStaff().getId()) {
+//                    isAssigned = true;
+//                    break;
+//                }
+//            }
 
             // check
             staffResponeDTO.setChecked(isAssigned ? "checked" : "");
@@ -131,7 +127,7 @@ public class BuildingServiceImpl implements BuildingService {
     public void delete(BuildingListRequestDTO buildingListRequestDTO) {
         // xóa bảng FK trước rồi mới xóa bảng building
         for (Long id : buildingListRequestDTO.getIdList()) {
-            assignmentBuildingRepository.deleteByBuildingId(id);
+//            assignmentBuildingRepository.deleteByBuildingId(id);
             rentAreaRepository.deleteByBuilding_Id(id);
             buildingRepository.deleteById(id);
         }
@@ -159,11 +155,11 @@ public class BuildingServiceImpl implements BuildingService {
         List<Long> staffIdList = request.getStaffIdList();
         BuildingEntity buildingEntity = buildingRepository.getOne(buildingId);
 
-        assignmentBuildingRepository.deleteByBuildingId(buildingId);
+//        assignmentBuildingRepository.deleteByBuildingId(buildingId);
         for (Long id : staffIdList) {
             UserEntity user = userRepository.getOne(id);
-            AssignmentBuildingEntity result = new AssignmentBuildingEntity(user, buildingEntity);
-            assignmentBuildingRepository.save(result);
+//            AssignmentBuildingEntity result = new AssignmentBuildingEntity(user, buildingEntity);
+//            assignmentBuildingRepository.save(result);
         }
         return new ResponeDTO(null,"success","Giao tòa nhà thành công!");
     }

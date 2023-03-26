@@ -1,9 +1,6 @@
 package com.laptrinhjavaweb.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,16 +56,23 @@ public class BuildingEntity extends BaseEntity {
     @Column(name = "link_of_building")
     private String linkOfbuilding;
 
-    @OneToMany(mappedBy = "staff")
-    private List<AssignmentBuildingEntity> staffs = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "assignment_building",
+            joinColumns = @JoinColumn(name = "building_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "staff_id", nullable = false))
+    private List<UserEntity> users;
 
-    @OneToMany(mappedBy = "building")
-    private List<RentAreaEntity> rentAreas = new ArrayList<>();
+    @OneToMany(mappedBy = "building", cascade = CascadeType.PERSIST)
+    private List<RentAreaEntity> rentAreas;
 
     @Column(name = "manager_name")
     private String managerName;
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    public List<UserEntity> getUsers() {
+        return users;
+    }
 
     public String getName() {
         return name;
@@ -260,14 +264,6 @@ public class BuildingEntity extends BaseEntity {
 
     public void setLinkOfbuilding(String linkOfbuilding) {
         this.linkOfbuilding = linkOfbuilding;
-    }
-
-    public List<AssignmentBuildingEntity> getStaffs() {
-        return staffs;
-    }
-
-    public void setStaffs(List<AssignmentBuildingEntity> staffs) {
-        this.staffs = staffs;
     }
 
     public List<RentAreaEntity> getRentAreas() {
