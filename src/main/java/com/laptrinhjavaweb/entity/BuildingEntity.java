@@ -62,13 +62,17 @@ public class BuildingEntity extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "staff_id", nullable = false))
     private List<UserEntity> users;
 
-    @OneToMany(mappedBy = "building", cascade = CascadeType.PERSIST)
-    private List<RentAreaEntity> rentAreas;
+    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RentAreaEntity> rentAreas = new ArrayList<>();
 
     @Column(name = "manager_name")
     private String managerName;
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    public void addRentArea(RentAreaEntity rentAreaEntity) {
+        rentAreas.add(rentAreaEntity);
+    }
 
     public List<UserEntity> getUsers() {
         return users;

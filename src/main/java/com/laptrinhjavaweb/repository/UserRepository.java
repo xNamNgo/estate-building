@@ -1,5 +1,6 @@
 package com.laptrinhjavaweb.repository;
 
+import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,5 +21,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     long countByStatusNot(int status);
     UserEntity findOneByUserName(String userName);
     List<UserEntity> findByStatusAndRoles_Code(Integer status, String roleCode);
+    List<UserEntity> findByBuildingId(Long buildingId);
+    UserEntity findById(Long id);
+
+
 
 }

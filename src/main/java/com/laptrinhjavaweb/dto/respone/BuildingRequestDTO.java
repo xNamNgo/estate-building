@@ -1,6 +1,6 @@
 package com.laptrinhjavaweb.dto.respone;
 
-public class BuildingResponeDTO {
+public class BuildingRequestDTO {
     private Long id;
     private String name;
     private String district;

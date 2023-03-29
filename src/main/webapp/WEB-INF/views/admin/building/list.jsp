@@ -274,27 +274,27 @@
 
                     <%-- //_client: load all fields của building  ra table --%>
                     <tbody>
-                    <c:forEach var="buildingListItem" items="${buildings}">
+                    <c:forEach var="item" items="${buildings}">
                         <tr>
-                            <td><input type="checkbox" value="${buildingListItem.id}"
-                                       id="checkbox_${buildingListItem.id}"></td>
-                            <td>${buildingListItem.modifiedDate}</td>
-                            <td>${buildingListItem.name}</td>
-                            <td>${buildingListItem.address}</td>
-                            <td>${buildingListItem.managerName}</td>
-                            <td>${buildingListItem.phoneNumber}</td>
-                            <td>${buildingListItem.floorArea}</td>
-                            <td>${buildingListItem.rentArea}</td>
-                            <td>${buildingListItem.rentPrice}</td>
+                            <td><input type="checkbox" value="${item.id}"
+                                       id="checkbox_${item.id}"></td>
+                            <td>${item.modifiedDate}</td>
+                            <td>${item.name}</td>
+                            <td>${item.address}</td>
+                            <td>${item.managerName}</td>
+                            <td>${item.phoneNumber}</td>
+                            <td>${item.floorArea}</td>
+                            <td>${item.rentArea}</td>
+                            <td>${item.rentPrice}</td>
                                 <%--                            <td>${buildingListItem.serviceFee}</td>--%>
                                 <%--                            <td>${buildingListItem.brokerageFee}</td>--%>
                             <td>
                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
-                                        title="Giao tòa nhà" onclick="assignmentBuilding(${buildingListItem.id})">
+                                        title="Giao tòa nhà" onclick="assignmentBuilding(${item.id})">
                                     <i class="fa fa-users" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
-                                        title="Chỉnh sửa tòa nhà" onclick="updateBuilding(${buildingListItem.id})">
+                                        title="Chỉnh sửa tòa nhà" onclick="updateBuilding(${item.id})">
                                     <i class="fa fa-pencil" aria-hidden="true"></i>
                                 </button>
                             </td>

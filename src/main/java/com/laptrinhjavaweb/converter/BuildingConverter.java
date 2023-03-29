@@ -2,7 +2,7 @@ package com.laptrinhjavaweb.converter;
 
 import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
 import com.laptrinhjavaweb.dto.BuildingSearchDTO;
-import com.laptrinhjavaweb.dto.respone.BuildingResponeDTO;
+import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
 import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.RentAreaEntity;
 import com.laptrinhjavaweb.repository.BuildingRepository;
@@ -24,8 +24,8 @@ public class BuildingConverter {
     private BuildingServiceImpl buildingService;
     @Autowired private BuildingRepository buildingRepository;
 
-    public BuildingResponeDTO convertToDTO(BuildingEntity entity) {
-        BuildingResponeDTO result = modelMapper.map(entity, BuildingResponeDTO.class);
+    public BuildingRequestDTO convertToDTO(BuildingEntity entity) {
+        BuildingRequestDTO result = modelMapper.map(entity, BuildingRequestDTO.class);
 
         // output "Địa chỉ"
         Map<String, String> districts = buildingService.getDistrictMap();
@@ -67,10 +67,10 @@ public class BuildingConverter {
         return result;
     }
 
-    public BuildingEntity covertToBuildingEntity(BuildingResponeDTO buildingResponeDTO) {
-        BuildingEntity buildingEntity = modelMapper.map(buildingResponeDTO, BuildingEntity.class);
+    public BuildingEntity covertToBuildingEntity(BuildingRequestDTO buildingRequestDTO) {
+        BuildingEntity buildingEntity = modelMapper.map(buildingRequestDTO, BuildingEntity.class);
 
-        String type = String.join(",", buildingResponeDTO.getTypes());
+        String type = String.join(",", buildingRequestDTO.getTypes());
         buildingEntity.setType(type);
 
 

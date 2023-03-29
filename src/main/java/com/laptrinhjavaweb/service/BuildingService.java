@@ -3,7 +3,7 @@ package com.laptrinhjavaweb.service;
 import com.laptrinhjavaweb.dto.BuildingSearchDTO;
 import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
 import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
-import com.laptrinhjavaweb.dto.respone.BuildingResponeDTO;
+import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 
 import java.util.List;
@@ -17,13 +17,13 @@ public interface BuildingService {
 
     ResponeDTO getListStaff(Long buildingId);
 
-    List<BuildingResponeDTO> loadBuilding(BuildingSearchDTO buildingSearchDTO);
+    List<BuildingRequestDTO> loadBuilding(BuildingSearchDTO buildingSearchDTO);
 
-    void save(BuildingResponeDTO buildingResponeDTO);
+    void save(BuildingRequestDTO buildingRequestDTO);
 
     void delete(BuildingListRequestDTO buildingListRequestDTO);
 
-    BuildingResponeDTO findById(Long id);
+    BuildingRequestDTO findById(Long id);
 
     ResponeDTO saveAssignmentBuilding(AssignmentBuildingRequestDTO request);
 

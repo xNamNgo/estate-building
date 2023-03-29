@@ -28,8 +28,6 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         sql = buildSqlCommon(builder, sql);
         sql = buildSqlSpecial(builder, sql);
         sql.append(BuildingConstant.GROUP_BY_BUILDING_ID);
-
-
         Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
         return query.getResultList();
     }
@@ -54,6 +52,8 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
             for (Field field : fields) {
                 field.setAccessible(true);
                 String fieldName = field.getName();
+
+                // các case có dùng các toán tử, câu lệnh đặt biệt thì xử lí riêng.
                 if (!fieldName.equals("types") && !fieldName.startsWith("costRent")
                         && !fieldName.startsWith("rentArea") && !fieldName.equals("staffId")) {
                     Object value = field.get(builder);

@@ -360,6 +360,10 @@
             }
         });
         data["types"] = buildingTypes;
+        saveBuilding(data);
+    });
+
+    function saveBuilding(data) {
         $.ajax({
             type: "POST",
             url: "${apiBuilding}",
@@ -375,7 +379,7 @@
                 console.log(respone);
             },
         });
-    });
+    }
 
     $("#btnUpdateBuilding").click(function () {
         // get "name","value" properties of html , id=formEdit

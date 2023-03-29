@@ -5,7 +5,7 @@ import com.laptrinhjavaweb.converter.BuildingConverter;
 import com.laptrinhjavaweb.dto.BuildingSearchDTO;
 import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
 import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
-import com.laptrinhjavaweb.dto.respone.BuildingResponeDTO;
+import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 import com.laptrinhjavaweb.dto.respone.StaffResponeDTO;
 import com.laptrinhjavaweb.entity.BuildingEntity;
@@ -37,14 +37,22 @@ public class BuildingServiceImpl implements BuildingService {
     @Autowired
     BuildingConverter buildingConverter;
 
+    /**
+     * Load data ra table
+     *
+     * @param buildingSearchDTO : object chứa các field tìm kiếm
+     * @return danh sách đã tìm được .
+     */
     @Override
-    public List<BuildingResponeDTO> loadBuilding(BuildingSearchDTO buildingSearchDTO) {
-        List<BuildingResponeDTO> result = new ArrayList<>();
+    public List<BuildingRequestDTO> loadBuilding(BuildingSearchDTO buildingSearchDTO) {
+        List<BuildingRequestDTO> result = new ArrayList<>();
+
+        // convert ObjectDTO sang ObjectBuider để truyền xuống repository => Giải quyết bài toán nhiều tham số
         BuildingSearchBuilder buildingSearchBuilder = buildingConverter.convertToBuildingSearchBuilder(buildingSearchDTO);
         List<BuildingEntity> buildingEntities = buildingRepository.findByCondition(buildingSearchBuilder);
         for (BuildingEntity item : buildingEntities) {
-            BuildingResponeDTO buildingResponeDTO = buildingConverter.convertToDTO(item);
-            result.add(buildingResponeDTO);
+            BuildingRequestDTO buildingRequestDTO = buildingConverter.convertToDTO(item);
+            result.add(buildingRequestDTO);
         }
         return result;
     }
@@ -71,34 +79,36 @@ public class BuildingServiceImpl implements BuildingService {
 
     /*
      * - Lấy danh sách tất cả nhân viên
-     * - Lấy danh sách nhân viên đang quản lý tòa nhà id
-     * - Kiểm tra nhân viên có nằm trong danh sách quản lý không - nếu có thì "checked"
+     * - kiểm tra nhân viên có nằm trong building không  - nếu có thì "checked"
      * */
     @Override
     public ResponeDTO getListStaff(Long buildingId) {
-        // danh sách tất cả nhân viên
-        List<UserEntity> userEntityList = userRepository.findByStatusAndRoles_Code(1, "STAFF");
-
-        // danh sách nhân viên đang quản lý tòa nhà id .
-//        List<AssignmentBuildingEntity> assignmentBuildingEntityList = assignmentBuildingRepository.findByBuildingId(buildingId);
-
         // result
         List<StaffResponeDTO> data = new ArrayList<>();
 
-        // output ở client là 1 danh sách nhân viên ,nhân viên nào quản lý thì "checked"
-        for (UserEntity user : userEntityList) {
+        // danh sách tất cả nhân viên
+        List<UserEntity> userList = userRepository.findByStatusAndRoles_Code(1, "STAFF");
+
+        // danh sách nhân viên đã được giao tòa nhà .
+        // 1 building - n user , nên sẽ tìm n user bằng 1 building - cụ thể là building id.
+        // building(1) có 2 user (2,3) nên cần load ra ds user id 2,3
+        List<UserEntity> userAssignmentList = userRepository.findByBuildingId(buildingId);
+
+        // output ở client : load all danh sách nhân viên có role STAFF.
+        // nhân viên nào quản lý thì "checked" -
+        for (UserEntity user : userList) {
             StaffResponeDTO staffResponeDTO = new StaffResponeDTO();
             staffResponeDTO.setStaffId(user.getId());
             staffResponeDTO.setFullName(user.getFullName());
 
             // user được giao tòa nhà thì checked
             boolean isAssigned = false;
-//            for (AssignmentBuildingEntity assignment : assignmentBuildingEntityList) {
-//                if (user.getId() == assignment.getStaff().getId()) {
-//                    isAssigned = true;
-//                    break;
-//                }
-//            }
+            for (UserEntity userAssignment : userAssignmentList) {
+                if (user.getId() == userAssignment.getId()) {
+                    isAssigned = true;
+                    break;
+                }
+            }
 
             // check
             staffResponeDTO.setChecked(isAssigned ? "checked" : "");
@@ -108,61 +118,62 @@ public class BuildingServiceImpl implements BuildingService {
         return new ResponeDTO(data, "success", "");
     }
 
+    // Save - Update building
     @Override
-    public void save(BuildingResponeDTO buildingResponeDTO) {
-        BuildingEntity buildingEntity = buildingConverter.covertToBuildingEntity(buildingResponeDTO);
-        buildingRepository.save(buildingEntity);
+    public void save(BuildingRequestDTO buildingRequestDTO) {
+        BuildingEntity buildingEntity = buildingConverter.covertToBuildingEntity(buildingRequestDTO);
 
-        rentAreaRepository.deleteByBuilding_Id(buildingEntity.getId());
-        String strRentArea = buildingResponeDTO.getRentArea();
-        if (!strRentArea.equals("")) {
-            for (String item : strRentArea.split(",")) {
-                RentAreaEntity rentAreaEntity = buildingConverter.covertToRentAreaEntity(buildingEntity, item);
-                rentAreaRepository.save(rentAreaEntity);
-            }
+        // "400,500,600" parse to Int [400,500,600] - Integer
+        if(buildingRequestDTO.getId() != null) {
+            buildingEntity.getRentAreas().clear();
         }
+        for(String value : buildingRequestDTO.getRentArea().split(",")){
+            RentAreaEntity rentAreaEntity = new RentAreaEntity();
+            Integer valueParse = Integer.parseInt(value);
+            rentAreaEntity.setValue(valueParse);
+            rentAreaEntity.setBuilding(buildingEntity);
+            buildingEntity.addRentArea(rentAreaEntity);
+        }
+        buildingRepository.save(buildingEntity);
     }
 
+    // delete building
     @Override
     public void delete(BuildingListRequestDTO buildingListRequestDTO) {
         // xóa bảng FK trước rồi mới xóa bảng building
+        // Sử dụng cascade nên khi xóa building thì sẽ tự động xóa các bản reference đến building.
+        // riêng @ManyToMany không cần cascade để xóa bảng trung gian .
         for (Long id : buildingListRequestDTO.getIdList()) {
-//            assignmentBuildingRepository.deleteByBuildingId(id);
-            rentAreaRepository.deleteByBuilding_Id(id);
             buildingRepository.deleteById(id);
         }
     }
 
     @Override
-    public BuildingResponeDTO findById(Long id) {
-        BuildingResponeDTO result = new BuildingResponeDTO();
+    public BuildingRequestDTO findById(Long id) {
+        BuildingRequestDTO result = new BuildingRequestDTO();
         if (id != null) {
             result = buildingConverter.convertToDTO(buildingRepository.getOne(id));
         }
         return result;
     }
 
-    /**
-     * Giao tòa nhà cho nhân viên quản lý
-     * @param request
-     * - Ở client sẽ gửi về cho server :
-     * + "id" tòa nhà muốn giao
-     * + "list id" nhân viên đã checked vào checkbox
-     * @return
-     */
+
+    // Giao tòa nhà cho nhân viên quản lý
     public ResponeDTO saveAssignmentBuilding(AssignmentBuildingRequestDTO request) {
+        // data từ client truyền xuống.
         Long buildingId = request.getBuildingId();
         List<Long> staffIdList = request.getStaffIdList();
-        BuildingEntity buildingEntity = buildingRepository.getOne(buildingId);
 
-//        assignmentBuildingRepository.deleteByBuildingId(buildingId);
+        BuildingEntity buildingEntity = buildingRepository.findById(buildingId);
+        buildingEntity.getUsers().clear(); // xóa hết danh sách nhân viên quản lý hiện tại .
+
+        // thêm nhân viên quản lý vào building.
         for (Long id : staffIdList) {
-            UserEntity user = userRepository.getOne(id);
-//            AssignmentBuildingEntity result = new AssignmentBuildingEntity(user, buildingEntity);
-//            assignmentBuildingRepository.save(result);
+            UserEntity user = userRepository.findById(id);
+            buildingEntity.getUsers().add(user);
         }
-        return new ResponeDTO(null,"success","Giao tòa nhà thành công!");
+        buildingRepository.save(buildingEntity);
+        return new ResponeDTO(null, "success", "Giao tòa nhà thành công!");
     }
-
-
 }
+

@@ -1,14 +1,12 @@
 package com.laptrinhjavaweb.entity;
 
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "rent_area")
 public class RentAreaEntity extends BaseEntity {
+    @Column
     private Integer value;
 
     @ManyToOne
