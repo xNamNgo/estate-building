@@ -7,7 +7,7 @@ import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 import com.laptrinhjavaweb.dto.respone.StaffResponeDTO;
 import com.laptrinhjavaweb.exception.MyException;
 import com.laptrinhjavaweb.service.IUserService;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserAPI {
 
-    private Logger LOGGER = Logger.getLogger(UserAPI.class);
+//    private Logger LOGGER = Logger.getLogger(UserAPI.class);
 
 
 

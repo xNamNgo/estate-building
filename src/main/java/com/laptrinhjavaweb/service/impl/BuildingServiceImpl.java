@@ -164,12 +164,12 @@ public class BuildingServiceImpl implements BuildingService {
         Long buildingId = request.getBuildingId();
         List<Long> staffIdList = request.getStaffIdList();
 
-        BuildingEntity buildingEntity = buildingRepository.findById(buildingId);
+        BuildingEntity buildingEntity = buildingRepository.findOneById(buildingId);
         buildingEntity.getUsers().clear(); // xóa hết danh sách nhân viên quản lý hiện tại .
 
         // thêm nhân viên quản lý vào building.
         for (Long id : staffIdList) {
-            UserEntity user = userRepository.findById(id);
+            UserEntity user = userRepository.findOneById(id);
             buildingEntity.getUsers().add(user);
         }
         buildingRepository.save(buildingEntity);
