@@ -16,26 +16,37 @@ import com.laptrinhjavaweb.enums.TypeEnum;
 import com.laptrinhjavaweb.repository.BuildingRepository;
 import com.laptrinhjavaweb.repository.RentAreaRepository;
 import com.laptrinhjavaweb.repository.UserRepository;
-import com.laptrinhjavaweb.service.BuildingService;
+import com.laptrinhjavaweb.service.IBuildingService;
+import com.laptrinhjavaweb.utils.UploadFileUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class BuildingServiceImpl implements BuildingService {
+public class BuildingService implements IBuildingService {
+    private final BuildingRepository buildingRepository;
+    private final BuildingConverter buildingConverter;
+    private final UploadFileUtils uploadFileUtils;
+
     @Autowired
-    BuildingRepository buildingRepository;
+    public BuildingService(BuildingRepository buildingRepository, BuildingConverter buildingConverter,
+                           UploadFileUtils uploadFileUtils) {
+        this.buildingRepository = buildingRepository;
+        this.buildingConverter = buildingConverter;
+        this.uploadFileUtils = uploadFileUtils;
+    }
+
     @Autowired
     UserRepository userRepository;
     @Autowired
     RentAreaRepository rentAreaRepository;
-
-    @Autowired
-    BuildingConverter buildingConverter;
 
     /**
      * Load data ra table
@@ -122,12 +133,19 @@ public class BuildingServiceImpl implements BuildingService {
     @Override
     public void save(BuildingRequestDTO buildingRequestDTO) {
         BuildingEntity buildingEntity = buildingConverter.covertToBuildingEntity(buildingRequestDTO);
+        Long buildingId = buildingRequestDTO.getId();
+
+        // update
+        if (buildingId != null) {
+            buildingEntity.getRentAreas().clear();
+            BuildingEntity foundBuilding = buildingRepository.findById(buildingId)
+                                                             .orElseThrow(() -> new NotFoundException("Building not found!"));
+            buildingEntity.setImage(foundBuilding.getImage());
+        }
+        saveThumbnail(buildingRequestDTO, buildingEntity);
 
         // "400,500,600" parse to Int [400,500,600] - Integer
-        if(buildingRequestDTO.getId() != null) {
-            buildingEntity.getRentAreas().clear();
-        }
-        for(String value : buildingRequestDTO.getRentArea().split(",")){
+        for (String value : buildingRequestDTO.getRentArea().split(",")) {
             RentAreaEntity rentAreaEntity = new RentAreaEntity();
             Integer valueParse = Integer.parseInt(value);
             rentAreaEntity.setValue(valueParse);
@@ -135,6 +153,21 @@ public class BuildingServiceImpl implements BuildingService {
             buildingEntity.addRentArea(rentAreaEntity);
         }
         buildingRepository.save(buildingEntity);
+    }
+
+    private void saveThumbnail(BuildingRequestDTO buildingDTO, BuildingEntity buildingEntity) {
+        String path = "/building/" + buildingDTO.getImageName();
+        if (null != buildingDTO.getImageBase64()) {
+            if (null != buildingEntity.getImage()) {
+                if (!path.equals(buildingEntity.getImage())) {
+                    File file = new File("C://home/office" + buildingEntity.getImage());
+                    file.delete();
+                }
+            }
+            byte[] bytes = Base64.decodeBase64(buildingDTO.getImageBase64().getBytes());
+            uploadFileUtils.writeOrUpdate(path, bytes);
+            buildingEntity.setImage(path);
+        }
     }
 
     // delete building
@@ -152,7 +185,7 @@ public class BuildingServiceImpl implements BuildingService {
     public BuildingRequestDTO findById(Long id) {
         BuildingRequestDTO result = new BuildingRequestDTO();
         if (id != null) {
-            result = buildingConverter.convertToDTO(buildingRepository.getOne(id));
+            result = buildingConverter.convertToDTO(buildingRepository.findOneById(id));
         }
         return result;
     }

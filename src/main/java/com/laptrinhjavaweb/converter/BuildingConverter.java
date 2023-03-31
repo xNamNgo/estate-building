@@ -6,7 +6,7 @@ import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
 import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.RentAreaEntity;
 import com.laptrinhjavaweb.repository.BuildingRepository;
-import com.laptrinhjavaweb.service.impl.BuildingServiceImpl;
+import com.laptrinhjavaweb.service.impl.BuildingService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class BuildingConverter {
     private ModelMapper modelMapper;
 
     @Autowired
-    private BuildingServiceImpl buildingService;
+    private BuildingService buildingService;
     @Autowired private BuildingRepository buildingRepository;
 
     public BuildingRequestDTO convertToDTO(BuildingEntity entity) {

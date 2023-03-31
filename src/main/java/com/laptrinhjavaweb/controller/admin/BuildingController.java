@@ -1,7 +1,7 @@
 package com.laptrinhjavaweb.controller.admin;
 
 import com.laptrinhjavaweb.dto.BuildingSearchDTO;
-import com.laptrinhjavaweb.service.BuildingService;
+import com.laptrinhjavaweb.service.IBuildingService;
 import com.laptrinhjavaweb.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/admin")
 public class BuildingController {
     @Autowired
-    BuildingService buildingService;
+    IBuildingService buildingService;
     @Autowired
     IUserService userService;
 
@@ -31,7 +31,7 @@ public class BuildingController {
         mav.addObject("districts", buildingService.getDistrictMap());
 
         // load list type
-        mav.addObject("types",buildingService.getTypeMap());
+        mav.addObject("types", buildingService.getTypeMap());
 
         return mav;
     }
@@ -42,7 +42,7 @@ public class BuildingController {
             @RequestParam(name = "building_id", required = false) Long id) {
         ModelAndView mav = new ModelAndView("admin/building/edit");
         mav.addObject("districts", buildingService.getDistrictMap());
-        mav.addObject("types",buildingService.getTypeMap());
+        mav.addObject("types", buildingService.getTypeMap());
         mav.addObject("building", buildingService.findById(id));
         return mav;
     }

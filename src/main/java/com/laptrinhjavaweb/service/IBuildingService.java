@@ -9,7 +9,7 @@ import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 import java.util.List;
 import java.util.Map;
 
-public interface BuildingService {
+public interface IBuildingService {
 
     Map<String, String> getDistrictMap();
 

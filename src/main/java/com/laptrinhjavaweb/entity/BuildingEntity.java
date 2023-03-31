@@ -55,6 +55,8 @@ public class BuildingEntity extends BaseEntity {
     private String note;
     @Column(name = "link_of_building")
     private String linkOfbuilding;
+    @Column
+    private String image;
 
     @ManyToMany
     @JoinTable(name = "assignment_building",
@@ -69,6 +71,18 @@ public class BuildingEntity extends BaseEntity {
     private String managerName;
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setUsers(List<UserEntity> users) {
+        this.users = users;
+    }
 
     public void addRentArea(RentAreaEntity rentAreaEntity) {
         rentAreas.add(rentAreaEntity);

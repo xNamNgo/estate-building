@@ -1,6 +1,8 @@
 package com.laptrinhjavaweb.dto.respone;
 
-public class BuildingRequestDTO {
+import com.laptrinhjavaweb.dto.AbstractDTO;
+
+public class BuildingRequestDTO extends AbstractDTO<BuildingRequestDTO> {
     private Long id;
     private String name;
     private String district;
@@ -31,16 +33,37 @@ public class BuildingRequestDTO {
     private String[] types;
     private String note;
     private String linkOfBuilding;
-    private String modifiedDate;
     private String type;
 
+    private String image;
+    private String imageBase64;
+    private String imageName;
 
-    public String getModifiedDate() {
-        return modifiedDate;
+    public String getImageBase64() {
+        if (imageBase64 != null) {
+            return imageBase64.split(",")[1];
+        }
+        return null;
     }
 
-    public void setModifiedDate(String modifiedDate) {
-        this.modifiedDate = modifiedDate;
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     public String getDistrict() {
@@ -210,6 +233,7 @@ public class BuildingRequestDTO {
     public void setLinkOfBuilding(String linkOfBuilding) {
         this.linkOfBuilding = linkOfBuilding;
     }
+
     public Long getId() {
         return id;
     }

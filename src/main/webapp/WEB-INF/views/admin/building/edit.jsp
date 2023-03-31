@@ -302,6 +302,23 @@
 
                         <input type="hidden" id="id" name="id" value="${building.id}">
 
+                        <div class="form-group">
+                            <label for="linkOfBuilding" class="col-sm-1 control-label">Hình đại diện</label>
+                            <div class="col-sm-3" style="margin-top:7px">
+                                <input type="file" id="uploadImage"/>
+                            </div>
+                            <div class="col-sm-9" style="margin-top: 10px; margin-left: 140px">
+                                <c:if test="${not empty building.image}">
+                                    <c:set var="imagePath" value="/repository${building.image}"/>
+                                    <img src="${imagePath}" id="viewImage" width="300px" height="300px"
+                                         style="margin-top: 50px">
+                                </c:if>
+                                <c:if test="${empty building.image}">
+                                    <img src="/admin/image/default.png" id="viewImage" width="300px" height="300px">
+                                </c:if>
+                            </div>
+                        </div>
+
                     </form>
                     <!-- button thêm/hủy -->
                     <div style="text-align: center">
@@ -345,24 +362,6 @@
         window.location.href = "/admin/building-list";
     });
 
-    $("#btnAddBuilding").click(function () {
-        // get "name","value" properties of html , id=formEdit
-        var formData = $("#formEdit").serializeArray();
-        var data = {}; // js obj - js dinationaryz
-        var buildingTypes = [];
-        $.each(formData, function (index, element) {
-
-            // 'element' [ "name","value"]
-            if (element.name == "types") {
-                buildingTypes.push(element.value);
-            } else {
-                data[element.name] = element.value;
-            }
-        });
-        data["types"] = buildingTypes;
-        saveBuilding(data);
-    });
-
     function saveBuilding(data) {
         $.ajax({
             type: "POST",
@@ -381,21 +380,7 @@
         });
     }
 
-    $("#btnUpdateBuilding").click(function () {
-        // get "name","value" properties of html , id=formEdit
-        var formData = $("#formEdit").serializeArray();
-        var data = {}; // js obj - js dinationaryz
-        var buildingTypes = [];
-        $.each(formData, function (index, element) {
-            // 'element' [ "name","value"]
-            if (element.name == "types") {
-                buildingTypes.push(element.value);
-            } else {
-                data[element.name] = element.value;
-            }
-        });
-        data["types"] = buildingTypes;
-        // call api
+    function updateBuilding(data){
         $.ajax({
             type: "PUT",
             url: "${apiBuilding}", // add the building ID as a parameter in the URL
@@ -411,8 +396,65 @@
                 console.log(response);
             },
         });
+    }
+
+    function getData(){
+        // get "name","value" properties of html , id=formEdit
+        var formData = $("#formEdit").serializeArray();
+        var data = {}; // js obj - js dinationaryz
+        var buildingTypes = [];
+        $.each(formData, function (index, element) {
+
+            // 'element' [ "name","value"]
+            if (element.name == "types") {
+                buildingTypes.push(element.value);
+            }
+            if ('' !== element.value && null != element.value) {
+                data['' + element.name + ''] = element.value;
+            }
+            if ('' !== imageBase64) {
+                data['imageBase64'] = imageBase64;
+                data['imageName'] = imageName;
+            }
+        });
+        data["types"] = buildingTypes;
+
+        return data;
+    }
+
+    var imageBase64 = '';
+    var imageName = '';
+
+    $("#btnAddBuilding").click(function () {
+        let data = getData();
+        saveBuilding(data);
     });
 
+    $("#btnUpdateBuilding").click(function () {
+        let data = getData();
+        updateBuilding(data);
+    });
+
+    $('#uploadImage').change(function (event) {
+        var reader = new FileReader();
+        var file = $(this)[0].files[0];
+        reader.onload = function(e){
+            imageBase64 = e.target.result;
+            imageName = file.name; // ten hinh khong dau, khoang cach. vd: a-b-c
+        };
+        reader.readAsDataURL(file);
+        openImage(this, "viewImage");
+    });
+
+    function openImage(input, imageView) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#' +imageView).attr('src', reader.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 </body>
 </html>

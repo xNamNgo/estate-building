@@ -4,7 +4,7 @@ import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
 import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
 import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
-import com.laptrinhjavaweb.service.BuildingService;
+import com.laptrinhjavaweb.service.IBuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/building")
 public class BuildingAPI {
     @Autowired
-    BuildingService buildingService;
+    IBuildingService buildingService;
 
 
     // _controller : load danh sách nhân viên quản lý ra "modal"
