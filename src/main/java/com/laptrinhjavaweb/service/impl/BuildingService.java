@@ -31,9 +31,15 @@ import java.util.Map;
 
 @Service
 public class BuildingService implements IBuildingService {
-    private final BuildingRepository buildingRepository;
-    private final BuildingConverter buildingConverter;
     private final UploadFileUtils uploadFileUtils;
+    @Autowired
+    BuildingRepository buildingRepository;
+    @Autowired
+    BuildingConverter buildingConverter;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    RentAreaRepository rentAreaRepository;
 
     @Autowired
     public BuildingService(BuildingRepository buildingRepository, BuildingConverter buildingConverter,
@@ -42,11 +48,6 @@ public class BuildingService implements IBuildingService {
         this.buildingConverter = buildingConverter;
         this.uploadFileUtils = uploadFileUtils;
     }
-
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RentAreaRepository rentAreaRepository;
 
     /**
      * Load data ra table
@@ -66,25 +67,6 @@ public class BuildingService implements IBuildingService {
             result.add(buildingRequestDTO);
         }
         return result;
-    }
-
-
-    @Override
-    public Map<String, String> getDistrictMap() {
-        Map<String, String> districts = new HashMap<>();
-        for (DistrictEnum item : DistrictEnum.values()) {
-            districts.put(item.toString(), item.getValue());
-        }
-        return districts;
-    }
-
-    @Override
-    public Map<String, String> getTypeMap() {
-        Map<String, String> types = new HashMap<>();
-        for (TypeEnum item : TypeEnum.values()) {
-            types.put(item.toString(), item.getValue());
-        }
-        return types;
     }
 
 

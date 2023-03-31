@@ -7,6 +7,7 @@ import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.RentAreaEntity;
 import com.laptrinhjavaweb.repository.BuildingRepository;
 import com.laptrinhjavaweb.service.impl.BuildingService;
+import com.laptrinhjavaweb.utils.GetDistrictUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,15 +21,11 @@ public class BuildingConverter {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private BuildingService buildingService;
-    @Autowired private BuildingRepository buildingRepository;
-
     public BuildingRequestDTO convertToDTO(BuildingEntity entity) {
         BuildingRequestDTO result = modelMapper.map(entity, BuildingRequestDTO.class);
 
         // output "Địa chỉ"
-        Map<String, String> districts = buildingService.getDistrictMap();
+        Map<String, String> districts = GetDistrictUtils.getDistrictMap();
         String street = entity.getStreet();
         String district = districts.get(entity.getDistrict());
         String ward = entity.getWard();

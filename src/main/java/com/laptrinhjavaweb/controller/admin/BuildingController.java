@@ -3,6 +3,8 @@ package com.laptrinhjavaweb.controller.admin;
 import com.laptrinhjavaweb.dto.BuildingSearchDTO;
 import com.laptrinhjavaweb.service.IBuildingService;
 import com.laptrinhjavaweb.service.IUserService;
+import com.laptrinhjavaweb.utils.GetDistrictUtils;
+import com.laptrinhjavaweb.utils.GetTypeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +30,10 @@ public class BuildingController {
         mav.addObject("staffMaps", userService.getStaffmaps());
 
         // load list quận
-        mav.addObject("districts", buildingService.getDistrictMap());
+        mav.addObject("districts", GetDistrictUtils.getDistrictMap());
 
         // load list type
-        mav.addObject("types", buildingService.getTypeMap());
+        mav.addObject("types", GetTypeUtils.getTypeMap());
 
         return mav;
     }
@@ -41,8 +43,8 @@ public class BuildingController {
     public ModelAndView buildingAddPage(
             @RequestParam(name = "building_id", required = false) Long id) {
         ModelAndView mav = new ModelAndView("admin/building/edit");
-        mav.addObject("districts", buildingService.getDistrictMap());
-        mav.addObject("types", buildingService.getTypeMap());
+        mav.addObject("districts", GetDistrictUtils.getDistrictMap());
+        mav.addObject("types", GetTypeUtils.getTypeMap());
         mav.addObject("building", buildingService.findById(id));
         return mav;
     }

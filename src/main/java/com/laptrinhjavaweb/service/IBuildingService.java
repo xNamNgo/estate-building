@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface IBuildingService {
-
-    Map<String, String> getDistrictMap();
-
-    Map<String, String> getTypeMap();
-
     ResponeDTO getListStaff(Long buildingId);
 
     List<BuildingRequestDTO> loadBuilding(BuildingSearchDTO buildingSearchDTO);
