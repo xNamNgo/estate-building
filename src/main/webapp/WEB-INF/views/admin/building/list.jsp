@@ -49,7 +49,7 @@
             <!-- widget body -->
             <div class="widget-body">
                 <div class="widget-main">
-                    <form:form commandName="searchBox" action="${buildingListUrl}" id="listForm" method="get">
+                    <form:form modelAttribute ="searchBox" action="${buildingListUrl}" id="listForm" method="get">
                         <div class="row">
                             <div class="col-xs-12"><!-- PAGE CONTENT BEGINS -->
                                 <div class="col-xs-6">
