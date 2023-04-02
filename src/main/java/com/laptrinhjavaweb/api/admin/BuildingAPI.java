@@ -26,10 +26,10 @@ public class BuildingAPI {
 
     @PostMapping
     @Transactional
-    public BuildingRequestDTO createBuilding(@RequestBody
+    public ResponseEntity<BuildingRequestDTO> createBuilding(@RequestBody
                                              BuildingRequestDTO newBuilding) {
-        buildingService.save(newBuilding);
-        return newBuilding;
+        ResponseEntity<BuildingRequestDTO> response = ResponseEntity.ok(buildingService.save(newBuilding));
+        return response;
     }
 
     @DeleteMapping

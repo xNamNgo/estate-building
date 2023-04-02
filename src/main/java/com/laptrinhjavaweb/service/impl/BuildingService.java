@@ -113,11 +113,11 @@ public class BuildingService implements IBuildingService {
 
     // Save - Update building
     @Override
-    public void save(BuildingRequestDTO buildingRequestDTO) {
+    public BuildingRequestDTO save(BuildingRequestDTO buildingRequestDTO) {
         BuildingEntity buildingEntity = buildingConverter.covertToBuildingEntity(buildingRequestDTO);
         Long buildingId = buildingRequestDTO.getId();
 
-        // update
+        //  Nếu đã tồn tại 1 building thì sẽ UPDATE.
         if (buildingId != null) {
             buildingEntity.getRentAreas().clear();
             BuildingEntity foundBuilding = buildingRepository.findById(buildingId)
@@ -127,14 +127,17 @@ public class BuildingService implements IBuildingService {
         saveThumbnail(buildingRequestDTO, buildingEntity);
 
         // "400,500,600" parse to Int [400,500,600] - Integer
-        for (String value : buildingRequestDTO.getRentArea().split(",")) {
-            RentAreaEntity rentAreaEntity = new RentAreaEntity();
-            Integer valueParse = Integer.parseInt(value);
-            rentAreaEntity.setValue(valueParse);
-            rentAreaEntity.setBuilding(buildingEntity);
-            buildingEntity.addRentArea(rentAreaEntity);
+        String rentAreaStr = buildingRequestDTO.getRentArea();
+        if(rentAreaStr != null){
+            for (String value : rentAreaStr.split(",")) {
+                RentAreaEntity rentAreaEntity = new RentAreaEntity();
+                Integer valueParse = Integer.parseInt(value);
+                rentAreaEntity.setValue(valueParse);
+                rentAreaEntity.setBuilding(buildingEntity);
+                buildingEntity.addRentArea(rentAreaEntity);
+            }
         }
-        buildingRepository.save(buildingEntity);
+        return  buildingConverter.convertToDTO(buildingRepository.save(buildingEntity));
     }
 
     private void saveThumbnail(BuildingRequestDTO buildingDTO, BuildingEntity buildingEntity) {

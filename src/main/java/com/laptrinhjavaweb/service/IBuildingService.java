@@ -14,7 +14,7 @@ public interface IBuildingService {
 
     List<BuildingRequestDTO> loadBuilding(BuildingSearchDTO buildingSearchDTO);
 
-    void save(BuildingRequestDTO buildingRequestDTO);
+    BuildingRequestDTO save(BuildingRequestDTO buildingRequestDTO);
 
     void delete(BuildingListRequestDTO buildingListRequestDTO);
 
