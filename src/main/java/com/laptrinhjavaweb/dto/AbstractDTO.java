@@ -14,10 +14,10 @@ public class AbstractDTO<T> implements Serializable {
     private String createdBy;
     private Date modifiedDate;
     private String modifiedBy;
-    private int maxPageItems = 10;
+    private int maxPageItems = 4;  // dùng để hiện thị số lượng item trong 1 page. - limit
     private int page = 1;
     private List<T> listResult = new ArrayList<>();
-    private int totalItems = 0;
+    private int totalItems = 0;     //  tổng tất cả item
     private String tableId = "tableList";
     private Integer limit;
     private Integer totalPage;

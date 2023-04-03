@@ -20,6 +20,7 @@ import com.laptrinhjavaweb.service.IBuildingService;
 import com.laptrinhjavaweb.utils.UploadFileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -52,16 +53,16 @@ public class BuildingService implements IBuildingService {
     /**
      * Load data ra table
      *
-     * @param buildingSearchDTO : object chứa các field tìm kiếm
+     * @param model : object chứa các field tìm kiếm
      * @return danh sách đã tìm được .
      */
     @Override
-    public List<BuildingRequestDTO> loadBuilding(BuildingSearchDTO buildingSearchDTO) {
+    public List<BuildingRequestDTO> loadBuilding(Pageable page,BuildingSearchDTO model) {
         List<BuildingRequestDTO> result = new ArrayList<>();
 
         // convert ObjectDTO sang ObjectBuider để truyền xuống repository => Giải quyết bài toán nhiều tham số
-        BuildingSearchBuilder buildingSearchBuilder = buildingConverter.convertToBuildingSearchBuilder(buildingSearchDTO);
-        List<BuildingEntity> buildingEntities = buildingRepository.findByCondition(buildingSearchBuilder);
+        BuildingSearchBuilder buildingSearchBuilder = buildingConverter.convertToBuildingSearchBuilder(model);
+        List<BuildingEntity> buildingEntities = buildingRepository.findByCondition(page,buildingSearchBuilder);
         for (BuildingEntity item : buildingEntities) {
             BuildingRequestDTO buildingRequestDTO = buildingConverter.convertToDTO(item);
             result.add(buildingRequestDTO);

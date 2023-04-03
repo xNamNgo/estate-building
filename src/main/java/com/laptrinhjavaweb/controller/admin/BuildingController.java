@@ -6,6 +6,8 @@ import com.laptrinhjavaweb.service.IUserService;
 import com.laptrinhjavaweb.utils.GetDistrictUtils;
 import com.laptrinhjavaweb.utils.GetTypeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,10 +23,12 @@ public class BuildingController {
     // _controller Trang danh sách tòa nhà .
     @GetMapping("/building-list")
     public ModelAndView buildingListPage(@ModelAttribute("searchBox")
-                                         BuildingSearchDTO buildingSearchDTO) {
+                                         BuildingSearchDTO model) {
         ModelAndView mav = new ModelAndView("admin/building/list");
+        // Phân trang
         // load list building to table
-        mav.addObject("buildings", buildingService.loadBuilding(buildingSearchDTO));
+        Pageable page = new PageRequest(model.getPage() - 1, model.getMaxPageItems());
+        mav.addObject("buildings", buildingService.loadBuilding(page,model));
 
         // load list nhân viên phụ trách
         mav.addObject("staffMaps", userService.getStaffmaps());

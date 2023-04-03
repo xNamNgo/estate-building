@@ -4,6 +4,7 @@ import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
 import com.laptrinhjavaweb.constant.BuildingConstant;
 import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.repository.custom.BuildingRepositoryCustom;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -21,13 +22,16 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<BuildingEntity> findByCondition(BuildingSearchBuilder builder) {
+    public List<BuildingEntity> findByCondition(Pageable page,BuildingSearchBuilder builder) {
         StringBuilder sql = new StringBuilder(BuildingConstant.SELECT_FROM_BULIDING);
         sql = buildSqlJoining(builder, sql);
         sql.append(" " + BuildingConstant.WHERE_ONE_EQUAL_ONE + " ");
         sql = buildSqlCommon(builder, sql);
         sql = buildSqlSpecial(builder, sql);
-        sql.append(BuildingConstant.GROUP_BY_BUILDING_ID);
+        sql.append(BuildingConstant.GROUP_BY_BUILDING_ID)
+           .append(" LIMIT ").append(page.getPageSize())
+           .append(" OFFSET ").append(page.getOffset());
+        System.out.println("SQL query : " + sql.toString());
         Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
         return query.getResultList();
     }

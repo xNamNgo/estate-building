@@ -3,7 +3,7 @@ package com.laptrinhjavaweb.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuildingSearchDTO {
+public class BuildingSearchDTO extends AbstractDTO {
     private String name;
     private Integer floorArea;
     private String district;

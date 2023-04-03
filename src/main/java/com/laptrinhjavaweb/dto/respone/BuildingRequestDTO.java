@@ -2,7 +2,7 @@ package com.laptrinhjavaweb.dto.respone;
 
 import com.laptrinhjavaweb.dto.AbstractDTO;
 
-public class BuildingRequestDTO extends AbstractDTO<BuildingRequestDTO> {
+public class BuildingRequestDTO extends AbstractDTO {
     private Long id;
     private String name;
     private String district;
