@@ -28,7 +28,7 @@ public class BuildingController {
         // Phân trang
         // load list building to table
         Pageable page = new PageRequest(model.getPage() - 1, model.getMaxPageItems());
-        mav.addObject("buildings", buildingService.loadBuilding(page,model));
+        mav.addObject("buildings", buildingService.loadBuilding(page, model));
 
         // load list nhân viên phụ trách
         mav.addObject("staffMaps", userService.getStaffmaps());

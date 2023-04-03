@@ -4,9 +4,11 @@
 <c:url var="buildingAPI" value="/api/building"/>
 <c:url var="assignmentAPI" value="/api/building/assignment-building"/>
 <html>
+
 <head>
     <title>Title</title>
 </head>
+
 <body>
 <div class="main-content">
     <div class="main-content-inner">
@@ -21,7 +23,7 @@
             <ul class="breadcrumb">
                 <li>
                     <i class="ace-icon fa fa-home home-icon"></i>
-                    <a href="<c:url value="/admin/home"/>">Trang chủ</a>
+                    <a href="<c:url value=" /admin/home" />">Trang chủ</a>
                 </li>
                 <li class="active"><strong>Danh sách tòa nhà</strong></li>
             </ul>
@@ -49,7 +51,8 @@
             <!-- widget body -->
             <div class="widget-body">
                 <div class="widget-main">
-                    <form:form modelAttribute ="searchBox" action="${buildingListUrl}" id="listForm" method="get">
+                    <form:form modelAttribute="searchBox" action="${buildingListUrl}" id="listForm"
+                               method="get">
                         <div class="row">
                             <div class="col-xs-12"><!-- PAGE CONTENT BEGINS -->
                                 <div class="col-xs-6">
@@ -63,13 +66,12 @@
                                 <div class="col-xs-6">
                                     <div>
                                         <label for="floorArea"><strong>Diện tích sàn</strong></label>
-                                        <input type="number" id="floorArea"
-                                               class="form-control" name="floorArea" value="${searchBox.floorArea}"
-                                        />
+                                        <input type="number" id="floorArea" class="form-control"
+                                               name="floorArea" value="${searchBox.floorArea}"/>
                                     </div>
                                 </div>
 
-                                    <%--//_client: load quận --%>
+                                    <%-- //_client: load quận --%>
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="col-xs-4">
@@ -77,8 +79,10 @@
                                                 <label><strong>Quận hiện có</strong></label>
                                                 <div class="form-group">
                                                     <div class="col-sm-6">
-                                                        <form:select path="district" class="form-control">
-                                                            <form:option value="" label="---Chọn quận---"/>
+                                                        <form:select path="district"
+                                                                     class="form-control">
+                                                            <form:option value=""
+                                                                         label="---Chọn quận---"/>
                                                             <form:options items="${districts}"/>
                                                         </form:select>
                                                     </div>
@@ -89,16 +93,16 @@
                                         <div class="col-xs-4">
                                             <div style="margin-top: 10px">
                                                 <label for="ward"><strong>Phường</strong></label>
-                                                <input type="text" id="ward" name="ward" value="${searchBox.ward}"
-                                                       class="form-control"/>
+                                                <input type="text" id="ward" name="ward"
+                                                       value="${searchBox.ward}" class="form-control"/>
                                             </div>
                                         </div>
 
                                         <div class="col-xs-4">
                                             <div style="margin-top: 10px">
                                                 <label for="street"><strong>Đường</strong></label>
-                                                <input type="text" id="street" name="street" value="${searchBox.street}"
-                                                       class="form-control"/>
+                                                <input type="text" id="street" name="street"
+                                                       value="${searchBox.street}" class="form-control"/>
                                             </div>
                                         </div>
                                     </div>
@@ -108,8 +112,10 @@
                                     <div class="col-xs-12">
                                         <div class="col-xs-4">
                                             <div style="margin-top: 10px">
-                                                <label for="numberOfBasement"><strong>Số tầng hầm</strong></label>
-                                                <input type="text" id="numberOfBasement" name="numberOfBasement"
+                                                <label for="numberOfBasement"><strong>Số tầng
+                                                    hầm</strong></label>
+                                                <input type="text" id="numberOfBasement"
+                                                       name="numberOfBasement"
                                                        value="${searchBox.numberOfBasement}"
                                                        class="form-control"/>
                                             </div>
@@ -127,8 +133,8 @@
                                         <div class="col-xs-4">
                                             <div style="margin-top: 10px">
                                                 <label for="level"><strong>Hạng</strong></label>
-                                                <input type="text" id="level" name="level" class="form-control"
-                                                       value="${searchBox.level}"/>
+                                                <input type="text" id="level" name="level"
+                                                       class="form-control" value="${searchBox.level}"/>
                                             </div>
                                         </div>
                                     </div>
@@ -138,8 +144,10 @@
                                     <div class="col-xs-12">
                                         <div class="col-xs-3">
                                             <div style="margin-top: 10px">
-                                                <label for="rentAreaFrom"><strong>Diện tích từ</strong></label>
-                                                <input type="number" id="rentAreaFrom" name="rentAreaFrom"
+                                                <label for="rentAreaFrom"><strong>Diện tích
+                                                    từ</strong></label>
+                                                <input type="number" id="rentAreaFrom"
+                                                       name="rentAreaFrom"
                                                        value="${searchBox.rentAreaFrom}"
                                                        class="form-control"/>
                                             </div>
@@ -147,7 +155,8 @@
 
                                         <div class="col-xs-3">
                                             <div style="margin-top: 10px">
-                                                <label for="rentAreaTo"><strong>Diện tích đến</strong></label>
+                                                <label for="rentAreaTo"><strong>Diện tích
+                                                    đến</strong></label>
                                                 <input type="number" id="rentAreaTo" name="rentAreaTo"
                                                        value="${searchBox.rentAreaTo}"
                                                        class="form-control"/>
@@ -156,8 +165,10 @@
 
                                         <div class="col-xs-3">
                                             <div style="margin-top: 10px">
-                                                <label for="costRentFrom"><strong>Giá thuê từ</strong></label>
-                                                <input type="number" id="costRentFrom" name="costRentFrom"
+                                                <label for="costRentFrom"><strong>Giá thuê
+                                                    từ</strong></label>
+                                                <input type="number" id="costRentFrom"
+                                                       name="costRentFrom"
                                                        value="${searchBox.costRentFrom}"
                                                        class="form-control"/>
                                             </div>
@@ -165,7 +176,8 @@
 
                                         <div class="col-xs-3">
                                             <div style="margin-top: 10px">
-                                                <label for="costRentTo"><strong>Giá thuê đến</strong></label>
+                                                <label for="costRentTo"><strong>Giá thuê
+                                                    đến</strong></label>
                                                 <input type="number" id="costRentTo" name="costRentTo"
                                                        value="${searchBox.costRentTo}"
                                                        class="form-control"/>
@@ -178,7 +190,8 @@
                                     <div class="col-xs-12">
                                         <div class="col-xs-4">
                                             <div style="margin-top: 10px">
-                                                <label for="managerName"><strong>Tên quản lý</strong></label>
+                                                <label for="managerName"><strong>Tên quản
+                                                    lý</strong></label>
                                                 <input type="text" id="managerName" name="managerName"
                                                        value="${searchBox.managerName}"
                                                        class="form-control"/>
@@ -187,7 +200,8 @@
 
                                         <div class="col-xs-4">
                                             <div style="margin-top: 10px">
-                                                <label for="phoneNumber"><strong>Điện thoại quản lý</strong></label>
+                                                <label for="phoneNumber"><strong>Điện thoại quản
+                                                    lý</strong></label>
                                                 <input type="text" id="phoneNumber" name="phoneNumber"
                                                        value="${searchBox.phoneNumber}"
                                                        class="form-control"/>
@@ -201,8 +215,10 @@
                                             </label>
                                             <div class="form-group">
                                                 <div class="col-sm-6">
-                                                    <form:select path="staffId" class="form-control">
-                                                        <form:option value="" label="---Chọn nhân viên---"/>
+                                                    <form:select path="staffId"
+                                                                 class="form-control">
+                                                        <form:option value=""
+                                                                     label="---Chọn nhân viên---"/>
                                                         <form:options items="${staffMaps}"/>
                                                     </form:select>
                                                 </div>
@@ -212,27 +228,28 @@
                                     </div>
                                 </div>
 
-                                    <%--                                hiển thị types --%>
+                                    <%-- hiển thị types --%>
                                 <div class="col-xs-11">
                                     <c:forEach var="type" items="${types}">
                                         <label class="checkbox-inline">
                                             <input type="checkbox" value="${type.key}" name="types"
-                                                   <c:if test="${searchBox.types.contains(type.key)}">checked</c:if>
+                                                   <c:if
+                                                           test="${searchBox.types.contains(type.key)}">checked
+                                            </c:if>
                                             />${type.value}</label>
                                     </c:forEach>
                                 </div>
 
                                 <div style="margin-top: 25px; margin-left: 8px">
-                                    <button type="button" class="btn btn-sm btn-success" id="btnSearch">
+                                    <button type="button" class="btn btn-sm btn-success"
+                                            id="btnSearch">
                                         Tìm kiếm
-                                        <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
+                                        <i
+                                                class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
                                     </button>
                                 </div>
-                                <!-- PAGE CONTENT ENDS -->
                             </div>
-                            <!-- /.col -->
                         </div>
-                        <!-- /.row -->
                     </form:form>
 
 
@@ -242,77 +259,66 @@
 
         <!-- icon thêm tòa nhà,xóa tòa nhà -->
         <div class="pull-right" style="margin-right: 15px">
-            <a href="<c:url value="/admin/building-edit"/>">
+            <a href="<c:url value=" /admin/building-edit" />">
                 <button class="btn btn-white btn-info btn-bold" data-toggle="tooltip" title="Thêm tòa nhà">
                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
                 </button>
             </a>
-            <button class="btn btn-white btn-info btn-bold" id="btnDelete" data-toggle="tooltip" title="Xóa tòa nhà"
-                    disabled>
+            <button class="btn btn-white btn-info btn-bold" id="btnDelete" data-toggle="tooltip"
+                    title="Xóa tòa nhà" disabled>
                 <i class="fa fa-trash-o" aria-hidden="true"></i>
             </button>
         </div>
 
-        <div class="row" style="margin-top: 60px; margin-right: 15px; margin-left: 15px">
+        <%-- LIST--%>
+        <div class="row">
             <div class="col-xs-12">
-                <table id="buildingList" class="table table-striped table-bordered table-hover">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Ngày</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Địa chỉ</th>
-                        <th>Tên quản lý</th>
-                        <th>Số điện thoại</th>
-                        <th>D.T sàn</th>
-                        <th>D.T trống</th>
-                        <th>Giá thuê</th>
-                        <%--                        <th>Phí dịch vụ</th>--%>
-                        <%--                        <th>Phí MG</th>--%>
-                        <th>Thao tác</th>
-                    </thead>
+                <div class="table-responsive">
+                    <display:table name="buildings" cellspacing="0" cellpadding="0"
+                                   requestURI="${buildingListUrl}" partialList="true" sort="external"
+                                   size="${searchBox.totalItems}" defaultsort="2" defaultorder="ascending"
+                                   id="buildings" pagesize="${searchBox.maxPageItems}" export="false"
+                                   class="table table-fcv-ace table-striped table-bordered table-hover dataTable no-footer"
+                                   style="margin: 3em 0 1.5em;">
 
-                    <%-- //_client: load all fields của building  ra table --%>
-                    <tbody>
-                    <c:forEach var="item" items="${buildings}">
-                        <tr>
-                            <td><input type="checkbox" value="${item.id}"
-                                       id="checkbox_${item.id}"></td>
-                            <td>${item.modifiedDate}</td>
-                            <td>${item.name}</td>
-                            <td>${item.address}</td>
-                            <td>${item.managerName}</td>
-                            <td>${item.phoneNumber}</td>
-                            <td>${item.floorArea}</td>
-                            <td>${item.rentArea}</td>
-                            <td>${item.rentPrice}</td>
-                                <%--                            <td>${buildingListItem.serviceFee}</td>--%>
-                                <%--                            <td>${buildingListItem.brokerageFee}</td>--%>
-                            <td>
-                                <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
-                                        title="Giao tòa nhà" onclick="assignmentBuilding(${item.id})">
-                                    <i class="fa fa-users" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
-                                        title="Chỉnh sửa tòa nhà" onclick="updateBuilding(${item.id})">
-                                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </c:forEach>
+                        <display:column title="" class="center select-cell"
+                                        headerClass="center select-cell">
+                            <fieldset>
+                                <input type="checkbox" name="checkList" value="${buildings.id}"
+                                       id="checkbox_${buildings.id}" class="check-box-element"/>
+                            </fieldset>
+                        </display:column>
 
-                    </tbody>
-                </table>
+                        <display:column headerClass="text-left" property="modifiedDate" title="Ngày"/>
+                        <display:column headerClass="text-left" property="name" title="Tên sản phẩm"/>
+                        <display:column headerClass="text-left" property="address" title="Địa chỉ"/>
+                        <display:column headerClass="text-left" property="managerName"
+                                        title="Tên quản lý"/>
+                        <display:column headerClass="text-left" property="phoneNumber"
+                                        title="Số điện thoại"/>
+                        <display:column headerClass="text-left" property="floorArea" title="D.T sàn"/>
+                        <display:column headerClass="text-left" property="rentArea" title="D.T trống"/>
+                        <display:column headerClass="text-left" property="rentPrice" title="Giá thuê"/>
+                        <display:column headerClass="col-actions" title="Thao tác">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
+                                    title="Giao tòa nhà" onclick="assignmentBuilding(${buildings.id})">
+                                <i class="fa fa-users" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
+                                    title="Chỉnh sửa tòa nhà" onclick="updateBuilding(${buildings.id})">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                        </display:column>
+                    </display:table>
+                </div>
             </div>
-            <!-- /.span -->
         </div>
-        <!-- /.row -->
     </div>
     <!-- /.page-content -->
 </div>
 
-<div class="modal fade" id="buildingAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="buildingAssignmentModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -385,7 +391,7 @@
         // buildingId đang là 1 hidden input , cho nên ta get value bằng cách này .
         data['buildingId'] = $("#buildingId").val();
         // $('#staffList').find('tbody input[type=checkbox]:checked');
-        var staffIdList = $('#staffList').find('tbody input[type=checkbox]:checked').map(function (){
+        var staffIdList = $('#staffList').find('tbody input[type=checkbox]:checked').map(function () {
             return $(this).val(); // đứng ở thằng modal - lấy tất cả value của checkbox có "checked"
         }).get();
         data['staffIdList'] = staffIdList;
@@ -394,7 +400,7 @@
         assignStaff(data);
     });
 
-    function assignStaff(data){
+    function assignStaff(data) {
         $.ajax({
             type: "POST",
             url: "${assignmentAPI}",
@@ -416,7 +422,7 @@
         var data = {};
 
         // Lấy danh sách id có checkbox là checked
-        var idList = $('#buildingList').find('tbody input[type=checkbox]:checked').map(function (){
+        var idList = $('#buildings').find('.select-cell [type=checkbox]:checked').map(function () {
             return $(this).val(); // đứng ở thằng modal - lấy tất cả value của checkbox có "checked"
         }).get();
         data["idList"] = idList;
@@ -425,7 +431,7 @@
         deleteBuilding(data);
     });
 
-    function deleteBuilding(data){
+    function deleteBuilding(data) {
         $.ajax({
             type: "DELETE",
             url: "${buildingAPI}",
@@ -459,4 +465,5 @@
 
 </script>
 </body>
+
 </html>
