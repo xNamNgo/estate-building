@@ -274,18 +274,18 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-responsive">
-                    <display:table name="buildings" cellspacing="0" cellpadding="0"
+                    <display:table name="buildings.listResult" cellspacing="0" cellpadding="0"
                                    requestURI="${buildingListUrl}" partialList="true" sort="external"
-                                   size="${searchBox.totalItems}" defaultsort="2" defaultorder="ascending"
-                                   id="buildings" pagesize="${searchBox.maxPageItems}" export="false"
+                                   size="${buildings.totalItem}" defaultsort="2" defaultorder="ascending"
+                                   id="tableList" pagesize="${buildings.maxPageItems}" export="false"
                                    class="table table-fcv-ace table-striped table-bordered table-hover dataTable no-footer"
                                    style="margin: 3em 0 1.5em;">
 
                         <display:column title="" class="center select-cell"
                                         headerClass="center select-cell">
                             <fieldset>
-                                <input type="checkbox" name="checkList" value="${buildings.id}"
-                                       id="checkbox_${buildings.id}" class="check-box-element"/>
+                                <input type="checkbox" name="checkList" value="${tableList.id}"
+                                       id="checkbox_${tableList.id}" class="check-box-element"/>
                             </fieldset>
                         </display:column>
 

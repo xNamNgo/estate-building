@@ -194,5 +194,10 @@ public class BuildingService implements IBuildingService {
         buildingRepository.save(buildingEntity);
         return new ResponeDTO(null, "success", "Giao tòa nhà thành công!");
     }
+
+    @Override
+    public int countTotalItems() {
+        return buildingRepository.countTotalItem();
+    }
 }
 

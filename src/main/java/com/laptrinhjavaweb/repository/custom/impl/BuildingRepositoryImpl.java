@@ -22,7 +22,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<BuildingEntity> findByCondition(Pageable page,BuildingSearchBuilder builder) {
+    public List<BuildingEntity> findByCondition(Pageable page, BuildingSearchBuilder builder) {
         StringBuilder sql = new StringBuilder(BuildingConstant.SELECT_FROM_BULIDING);
         sql = buildSqlJoining(builder, sql);
         sql.append(" " + BuildingConstant.WHERE_ONE_EQUAL_ONE + " ");
@@ -108,6 +108,13 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
             sql.append(" )");
         }
         return sql;
+    }
+
+    @Override
+    public int countTotalItem() {
+        String sql = "select * from building";
+        Query query = entityManager.createNativeQuery(sql);
+        return query.getResultList().size();
     }
 }
 

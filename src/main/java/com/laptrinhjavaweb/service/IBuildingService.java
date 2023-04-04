@@ -13,7 +13,7 @@ import java.util.Map;
 public interface IBuildingService {
     ResponeDTO getListStaff(Long buildingId);
 
-    List<BuildingRequestDTO> loadBuilding(Pageable page,BuildingSearchDTO model);
+    List<BuildingRequestDTO> loadBuilding(Pageable page, BuildingSearchDTO model);
 
     BuildingRequestDTO save(BuildingRequestDTO buildingRequestDTO);
 
@@ -23,5 +23,5 @@ public interface IBuildingService {
 
     ResponeDTO saveAssignmentBuilding(AssignmentBuildingRequestDTO request);
 
-
+    int countTotalItems();
 }
