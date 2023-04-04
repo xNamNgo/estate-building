@@ -301,11 +301,11 @@
                         <display:column headerClass="text-left" property="rentPrice" title="Giá thuê"/>
                         <display:column headerClass="col-actions" title="Thao tác">
                             <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
-                                    title="Giao tòa nhà" onclick="assignmentBuilding(${buildings.id})">
+                                    title="Giao tòa nhà" onclick="assignmentBuilding(${tableList.id})">
                                 <i class="fa fa-users" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
-                                    title="Chỉnh sửa tòa nhà" onclick="updateBuilding(${buildings.id})">
+                                    title="Chỉnh sửa tòa nhà" onclick="updateBuilding(${tableList.id})">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                             </button>
                         </display:column>
@@ -422,7 +422,7 @@
         var data = {};
 
         // Lấy danh sách id có checkbox là checked
-        var idList = $('#buildings').find('.select-cell [type=checkbox]:checked').map(function () {
+        var idList = $('#tableList').find('.select-cell [type=checkbox]:checked').map(function () {
             return $(this).val(); // đứng ở thằng modal - lấy tất cả value của checkbox có "checked"
         }).get();
         data["idList"] = idList;
