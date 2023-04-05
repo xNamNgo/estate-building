@@ -409,6 +409,7 @@
             contentType: "application/json",
             success: function (response) {
                 console.log("success");
+                alert("Giao tòa nhà thành công!");
             },
             error: function (response) {
                 console.log("failed");
@@ -418,17 +419,14 @@
     }
 
     $("#btnDelete").click(function (e) {
-        e.preventDefault();
-        var data = {};
-
-        // Lấy danh sách id có checkbox là checked
-        var idList = $('#tableList').find('.select-cell [type=checkbox]:checked').map(function () {
-            return $(this).val(); // đứng ở thằng modal - lấy tất cả value của checkbox có "checked"
-        }).get();
-        data["idList"] = idList;
-
-        // call api
-        deleteBuilding(data);
+        showAlertBeforeDelete(function () {
+            e.preventDefault();
+            // Lấy danh sách id có checkbox là checked
+            var data = $('#tableList').find('.select-cell [type=checkbox]:checked').map(function () {
+                return $(this).val(); // đứng ở thằng modal - lấy tất cả value của checkbox có "checked"
+            }).get();
+            deleteBuilding(data);
+        });
     });
 
     function deleteBuilding(data) {
@@ -440,11 +438,13 @@
             contentType: "application/json",
             success: function (response) {
                 console.log("success");
-                location.reload();
+                window.location.href = "<c:url value='/admin/building-list'/>";
+                alert("Xóa tòa nhà thành công!");
             },
             error: function (response) {
                 console.log("failed");
                 console.log(response);
+                alert("Xóa tòa nhà thất bại!");
             },
         });
     }

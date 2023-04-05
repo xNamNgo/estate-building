@@ -23,17 +23,29 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
 
     @Override
     public List<BuildingEntity> findByCondition(Pageable page, BuildingSearchBuilder builder) {
+        StringBuilder sql = new StringBuilder(buildQueryFilter(builder))
+                .append(" LIMIT ").append(page.getPageSize())
+                .append(" OFFSET ").append(page.getOffset());
+        System.out.println("SQL query : " + sql.toString());
+        Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
+        return query.getResultList();
+    }
+
+    @Override
+    public int countTotalItem(BuildingSearchBuilder builder) {
+        String sql = buildQueryFilter(builder);
+        Query query = entityManager.createNativeQuery(sql);
+        return query.getResultList().size();
+    }
+
+    private String buildQueryFilter(BuildingSearchBuilder builder) {
         StringBuilder sql = new StringBuilder(BuildingConstant.SELECT_FROM_BULIDING);
         sql = buildSqlJoining(builder, sql);
         sql.append(" " + BuildingConstant.WHERE_ONE_EQUAL_ONE + " ");
         sql = buildSqlCommon(builder, sql);
         sql = buildSqlSpecial(builder, sql);
-        sql.append(BuildingConstant.GROUP_BY_BUILDING_ID)
-           .append(" LIMIT ").append(page.getPageSize())
-           .append(" OFFSET ").append(page.getOffset());
-        System.out.println("SQL query : " + sql.toString());
-        Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
-        return query.getResultList();
+        sql.append(BuildingConstant.GROUP_BY_BUILDING_ID);
+        return sql.toString();
     }
 
     private StringBuilder buildSqlJoining(BuildingSearchBuilder builder, StringBuilder sql) {
@@ -110,11 +122,6 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         return sql;
     }
 
-    @Override
-    public int countTotalItem() {
-        String sql = "select * from building";
-        Query query = entityManager.createNativeQuery(sql);
-        return query.getResultList().size();
-    }
+
 }
 

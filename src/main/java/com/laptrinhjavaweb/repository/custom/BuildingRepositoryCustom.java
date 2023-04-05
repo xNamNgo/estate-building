@@ -9,6 +9,6 @@ import java.util.List;
 public interface BuildingRepositoryCustom {
     //đặt tên theo rule: XRepositoryCustom
     List<BuildingEntity> findByCondition(Pageable page,BuildingSearchBuilder builder);
-    int countTotalItem();
+    int countTotalItem(BuildingSearchBuilder builder);
 }
 

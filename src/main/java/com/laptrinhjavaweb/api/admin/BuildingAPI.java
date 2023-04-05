@@ -1,7 +1,6 @@
 package com.laptrinhjavaweb.api.admin;
 
 import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
-import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
 import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 import com.laptrinhjavaweb.service.IBuildingService;
@@ -27,7 +26,7 @@ public class BuildingAPI {
     @PostMapping
     @Transactional
     public ResponseEntity<BuildingRequestDTO> createBuilding(@RequestBody
-                                             BuildingRequestDTO newBuilding) {
+                                                             BuildingRequestDTO newBuilding) {
         ResponseEntity<BuildingRequestDTO> response = ResponseEntity.ok(buildingService.save(newBuilding));
         return response;
     }
@@ -35,9 +34,10 @@ public class BuildingAPI {
     @DeleteMapping
     @Transactional
     // TODO : dưới server nhận JSON là 1 kểu dạng key-value , để list sẽ bị lỗi .
-    public ResponseEntity<Void> deleteBuilding(@RequestBody
-                                               BuildingListRequestDTO buildingListRequestDTO) {
-        buildingService.delete(buildingListRequestDTO);
+    public ResponseEntity<Void> deleteBuilding(@RequestBody long[] idList) {
+        if (idList.length > 0) {
+            buildingService.delete(idList);
+        }
         return ResponseEntity.noContent().build();
     }
 

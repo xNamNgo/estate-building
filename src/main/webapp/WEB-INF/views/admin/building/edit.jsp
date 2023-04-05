@@ -371,6 +371,7 @@
             contentType: "application/json", //client request to server JSON type
             success: function (response) {
                 console.log("success");
+                alert("Thêm tòa nhà thành công!");
                 window.location.href = "/admin/building-list";
             },
             error: function (response) {
@@ -389,6 +390,7 @@
             contentType: "application/json", //client request to server JSON type
             success: function (response) {
                 console.log("success");
+                alert("Cập nhật tòa nhà thành công!");
                 window.location.href = "/admin/building-list";
             },
             error: function (response) {

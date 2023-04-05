@@ -36,7 +36,7 @@ public class BuildingController {
         Pageable page = new PageRequest(model.getPage() - 1, model.getMaxPageItems());
         List<BuildingRequestDTO> buildingList = buildingService.loadBuilding(page, model);
         model.setListResult(buildingList);
-        model.setTotalItem(buildingService.countTotalItems());
+        model.setTotalItem(buildingService.countTotalItems(model));
         mav.addObject("buildings", model);
 
         // load list nhân viên phụ trách

@@ -5,7 +5,8 @@ import com.laptrinhjavaweb.repository.custom.BuildingRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BuildingRepository extends BuildingRepositoryCustom, JpaRepository<BuildingEntity, Long> {
-    void deleteById(Long id);
-//    BuildingEntity findById(Long buildingId);
+    void deleteByIdIn(long[] idList);
     BuildingEntity findOneById(Long buildingId);
+    Long countByIdIn(long[] idList);
+
 }

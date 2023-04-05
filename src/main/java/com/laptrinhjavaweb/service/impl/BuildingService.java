@@ -4,15 +4,12 @@ import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
 import com.laptrinhjavaweb.converter.BuildingConverter;
 import com.laptrinhjavaweb.dto.BuildingSearchDTO;
 import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
-import com.laptrinhjavaweb.dto.request.BuildingListRequestDTO;
 import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
 import com.laptrinhjavaweb.dto.respone.ResponeDTO;
 import com.laptrinhjavaweb.dto.respone.StaffResponeDTO;
 import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.RentAreaEntity;
 import com.laptrinhjavaweb.entity.UserEntity;
-import com.laptrinhjavaweb.enums.DistrictEnum;
-import com.laptrinhjavaweb.enums.TypeEnum;
 import com.laptrinhjavaweb.repository.BuildingRepository;
 import com.laptrinhjavaweb.repository.RentAreaRepository;
 import com.laptrinhjavaweb.repository.UserRepository;
@@ -26,9 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class BuildingService implements IBuildingService {
@@ -61,13 +56,19 @@ public class BuildingService implements IBuildingService {
         List<BuildingRequestDTO> result = new ArrayList<>();
 
         // convert ObjectDTO sang ObjectBuider để truyền xuống repository => Giải quyết bài toán nhiều tham số
-        BuildingSearchBuilder buildingSearchBuilder = buildingConverter.convertToBuildingSearchBuilder(model);
-        List<BuildingEntity> buildingEntities = buildingRepository.findByCondition(page,buildingSearchBuilder);
+        BuildingSearchBuilder builder = buildingConverter.convertToBuildingSearchBuilder(model);
+        List<BuildingEntity> buildingEntities = buildingRepository.findByCondition(page,builder);
         for (BuildingEntity item : buildingEntities) {
             BuildingRequestDTO buildingRequestDTO = buildingConverter.convertToDTO(item);
             result.add(buildingRequestDTO);
         }
         return result;
+    }
+
+    @Override
+    public int countTotalItems(BuildingSearchDTO model) {
+        BuildingSearchBuilder builder = buildingConverter.convertToBuildingSearchBuilder(model);
+        return buildingRepository.countTotalItem(builder);
     }
 
 
@@ -158,12 +159,16 @@ public class BuildingService implements IBuildingService {
 
     // delete building
     @Override
-    public void delete(BuildingListRequestDTO buildingListRequestDTO) {
+    public void delete(long[] idList) {
         // xóa bảng FK trước rồi mới xóa bảng building
         // Sử dụng cascade nên khi xóa building thì sẽ tự động xóa các bản reference đến building.
         // riêng @ManyToMany không cần cascade để xóa bảng trung gian .
-        for (Long id : buildingListRequestDTO.getIdList()) {
-            buildingRepository.deleteById(id);
+        if(idList.length > 0){
+            Long count = buildingRepository.countByIdIn(idList);
+            if(count != idList.length) {
+                throw new NotFoundException("Không tìm thấy tòa nhà hợp lệ!");
+            }
+            buildingRepository.deleteByIdIn(idList);
         }
     }
 
@@ -195,9 +200,6 @@ public class BuildingService implements IBuildingService {
         return new ResponeDTO(null, "success", "Giao tòa nhà thành công!");
     }
 
-    @Override
-    public int countTotalItems() {
-        return buildingRepository.countTotalItem();
-    }
+
 }
 
