@@ -64,7 +64,7 @@ public class BuildingEntity extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "staff_id", nullable = false))
     private List<UserEntity> users;
 
-    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "building", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<RentAreaEntity> rentAreas = new ArrayList<>();
 
     @Column(name = "manager_name")

@@ -121,7 +121,7 @@ public class BuildingService implements IBuildingService {
 
         //  Nếu đã tồn tại 1 building thì sẽ UPDATE.
         if (buildingId != null) {
-            buildingEntity.getRentAreas().clear();
+//            buildingEntity.getRentAreas().clear();
             BuildingEntity foundBuilding = buildingRepository.findById(buildingId)
                                                              .orElseThrow(() -> new NotFoundException("Building not found!"));
             buildingEntity.setImage(foundBuilding.getImage());
