@@ -3,14 +3,14 @@ package com.laptrinhjavaweb.dto.request;
 import java.util.List;
 
 public class AssignmentBuildingRequestDTO {
-    private List<Long> staffIdList;
+    private long[] staffIdList;
     private Long buildingId;
 
-    public List<Long> getStaffIdList() {
+    public long[] getStaffIdList() {
         return staffIdList;
     }
 
-    public void setStaffIdList(List<Long> staffIdList) {
+    public void setStaffIdList(long[] staffIdList) {
         this.staffIdList = staffIdList;
     }
 
