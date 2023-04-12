@@ -73,6 +73,7 @@ public class BuildingService implements IBuildingService {
 
 
     /*
+     * - Page load danh sách nhân viên quản lý tòa nhà .
      * - Lấy danh sách tất cả nhân viên
      * - kiểm tra nhân viên có nằm trong building không  - nếu có thì "checked"
      * */
@@ -118,23 +119,28 @@ public class BuildingService implements IBuildingService {
     public BuildingRequestDTO save(BuildingRequestDTO buildingRequestDTO) {
         BuildingEntity buildingEntity = buildingConverter.covertToBuildingEntity(buildingRequestDTO);
         Long buildingId = buildingRequestDTO.getId();
-
         //  Nếu đã tồn tại 1 building thì sẽ UPDATE.
+        // Đồng thời phải insert data của các child table để tránh bị mất data .
         if (buildingId != null) {
-            BuildingEntity foundBuilding = buildingRepository.findById(buildingId)
-                                                             .orElseThrow(() -> new NotFoundException("Building not found!"));
+            BuildingEntity foundBuilding = buildingRepository.findById(buildingId).orElseThrow(() -> new NotFoundException("Building not found!"));
             buildingEntity.setImage(foundBuilding.getImage());
 
-            // tránh bị mất data assignment thì phải set cho buliding entity.
+            // tránh bị mất data assignment thì phải set cho building entity.
             List<UserEntity> assignment = foundBuilding.getUsers();
             if (assignment.size() != 0) {
                 buildingEntity.setUsers(assignment);
             }
-
         }
         saveThumbnail(buildingRequestDTO, buildingEntity);
 
         // "400,500,600" parse to Int [400,500,600] - Integer
+        saveOrUpdateRentArea(buildingRequestDTO, buildingEntity);
+        return buildingConverter.convertToDTO(buildingRepository.save(buildingEntity));
+    }
+
+    // 1 tòa nhà - n rentarea.
+    // Sử dụng cascade nên không cần phải .save rentarea .
+    private void saveOrUpdateRentArea(BuildingRequestDTO buildingRequestDTO, BuildingEntity buildingEntity) {
         String rentAreaStr = buildingRequestDTO.getRentArea();
         if (rentAreaStr != null) {
             for (String value : rentAreaStr.split(",")) {
@@ -142,12 +148,10 @@ public class BuildingService implements IBuildingService {
                 Integer valueParse = Integer.parseInt(value);
                 rentAreaEntity.setValue(valueParse);
                 rentAreaEntity.setBuilding(buildingEntity);
+                //cascade
                 buildingEntity.addRentArea(rentAreaEntity);
             }
         }
-
-
-        return buildingConverter.convertToDTO(buildingRepository.save(buildingEntity));
     }
 
     private void saveThumbnail(BuildingRequestDTO buildingDTO, BuildingEntity buildingEntity) {
@@ -170,7 +174,7 @@ public class BuildingService implements IBuildingService {
     public void delete(long[] idList) {
         // xóa bảng FK trước rồi mới xóa bảng building
         // Sử dụng cascade nên khi xóa building thì sẽ tự động xóa các bản reference đến building.
-        // riêng @ManyToMany không cần cascade để xóa bảng trung gian .
+        // riêng @ManyToMany không cần cascade để xóa bảng trung gian vì đã được handle .
         if (idList.length > 0) {
             Long count = buildingRepository.countByIdIn(idList);
             if (count != idList.length) {
@@ -180,6 +184,12 @@ public class BuildingService implements IBuildingService {
         }
     }
 
+    /**
+     * Load trang insert/update building .
+     *
+     * @param id : building id
+     * @return thông tin của tòa nhà , nếu không có thì sẽ là null .
+     */
     @Override
     public BuildingRequestDTO findById(Long id) {
         BuildingRequestDTO result = new BuildingRequestDTO();
