@@ -1,4 +1,5 @@
-# Kiến thức có trong proj
+# WEBSITE Quản lý văn phòng cho thuê
+Công nghệ sử dụng : 
 - JPA/Hibernate, Spring Data JPA
 - Spring Security,Spring MVC,Spring Boot,Spring Framework
 - JSP
