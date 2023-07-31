@@ -21,7 +21,7 @@ public class UserAPI {
         if(buildingId != null){
             result = userService.loadStaff(buildingId);
         } else {
-            // load staff
+            // load stafff
         }
         return result;
     }
