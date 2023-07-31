@@ -1,25 +1,22 @@
 package com.laptrinhjavaweb.service;
 
-import com.laptrinhjavaweb.dto.BuildingSearchDTO;
+import com.laptrinhjavaweb.dto.BuildingSearchRequest;
 import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
-import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
-import com.laptrinhjavaweb.dto.respone.ResponeDTO;
+import com.laptrinhjavaweb.dto.request.BuildingSearchRespone;
+import com.laptrinhjavaweb.dto.respone.ResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface IBuildingService {
-    ResponeDTO getListStaff(Long buildingId);
 
-    List<BuildingRequestDTO> loadBuilding(Pageable page, BuildingSearchDTO model);
+    List<BuildingSearchRespone> loadBuilding(Pageable page, BuildingSearchRequest model);
 
-    BuildingRequestDTO save(BuildingRequestDTO buildingRequestDTO);
+    BuildingSearchRespone save(BuildingSearchRespone buildingSearchRespone);
 
     void delete(long[] idList);
 
-    BuildingRequestDTO findById(Long id);
+    BuildingSearchRespone findById(Long id);
 
-    ResponeDTO saveAssignmentBuilding(AssignmentBuildingRequestDTO request);
-
-    int countTotalItems(BuildingSearchDTO model);
+    int countTotalItems(BuildingSearchRequest model);
 }

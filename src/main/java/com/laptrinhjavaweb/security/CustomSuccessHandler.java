@@ -37,7 +37,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         } else if (isAdmin(roles)) {
             url = SystemConstant.ADMIN_HOME;
         }
-        return url;
+        return url; 
     }
 
     public void setRedirectStrategy(RedirectStrategy redirectStrategy) {

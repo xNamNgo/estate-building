@@ -1,14 +1,19 @@
 package com.laptrinhjavaweb.dto.respone;
 
-public class ResponeDTO {
+public class ResponseDTO {
     private Object data;
     private String message;
     private String detail;
 
-    public ResponeDTO() {
+    public ResponseDTO() {
     }
 
-    public ResponeDTO(Object data, String message, String detail) {
+    public ResponseDTO(String message, String detail) {
+        this.message = message;
+        this.detail = detail;
+    }
+
+    public ResponseDTO(Object data, String message, String detail) {
         this.data = data;
         this.message = message;
         this.detail = detail;

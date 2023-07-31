@@ -1,9 +1,8 @@
 package com.laptrinhjavaweb.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class BuildingSearchDTO extends AbstractDTO {
+public class BuildingSearchRequest extends AbstractDTO {
     private String name;
     private Integer floorArea;
     private String district;
@@ -25,7 +24,7 @@ public class BuildingSearchDTO extends AbstractDTO {
         return types;
     }
 
-    public BuildingSearchDTO setTypes(List<String> types) {
+    public BuildingSearchRequest setTypes(List<String> types) {
         this.types = types;
         return this;
     }

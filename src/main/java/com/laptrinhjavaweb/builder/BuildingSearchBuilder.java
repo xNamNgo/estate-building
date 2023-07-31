@@ -267,7 +267,7 @@ public class BuildingSearchBuilder {
             return this;
         }
 
-        public BuildingSearchBuilder build() {
+        public BuildingSearchBuilder build()  {
             return new BuildingSearchBuilder(this);
         }
     }

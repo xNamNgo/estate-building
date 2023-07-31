@@ -1,24 +1,53 @@
 package com.laptrinhjavaweb.api.admin;
 
-import com.laptrinhjavaweb.constant.SystemConstant;
-import com.laptrinhjavaweb.dto.PasswordDTO;
-import com.laptrinhjavaweb.dto.UserDTO;
-import com.laptrinhjavaweb.dto.respone.ResponeDTO;
-import com.laptrinhjavaweb.dto.respone.StaffResponeDTO;
-import com.laptrinhjavaweb.exception.MyException;
-import com.laptrinhjavaweb.service.IUserService;
 //import org.apache.log4j.Logger;
+import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
+import com.laptrinhjavaweb.dto.respone.ResponseDTO;
+import com.laptrinhjavaweb.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserAPI {
+    @Autowired
+    UserService userService;
+
+    @GetMapping("/staffs")
+    public ResponseDTO loadStaff(@RequestParam(required = false,value = "building_id") Long buildingId) {
+        ResponseDTO result = new ResponseDTO();
+
+        // load staff giao tòa nhà
+        if(buildingId != null){
+            result = userService.loadStaff(buildingId);
+        } else {
+            // load staff
+        }
+        return result;
+    }
+
+    @PostMapping("/assignment")
+    public ResponseDTO saveAssignmentBuilding(
+            @RequestBody AssignmentBuildingRequestDTO assignmentRequest) {
+        ResponseDTO result = userService.saveAssignmentBuilding(assignmentRequest);
+        return result;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //    private Logger LOGGER = Logger.getLogger(UserAPI.class);
 

@@ -57,7 +57,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         }
         if (staffId != null) {
             sql.append(" join assignment_building as ab on ab.building_id = b.id")
-               .append(" join user on user.id = ab.staff_id");
+                    .append(" join user on user.id = ab.staff_id");
         }
         return sql;
     }
@@ -121,7 +121,5 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         }
         return sql;
     }
-
-
 }
 

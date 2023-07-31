@@ -5,3 +5,4 @@ public class BuildingConstant {
     public static final String GROUP_BY_BUILDING_ID = " group by b.id";
     public static final String SELECT_FROM_BULIDING = "select b.* from building as b";
 }
+

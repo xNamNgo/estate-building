@@ -2,7 +2,9 @@
 <%@ include file="/common/taglib.jsp" %>
 <c:url var="buildingListUrl" value="/admin/building-list"/>
 <c:url var="buildingAPI" value="/api/building"/>
-<c:url var="assignmentAPI" value="/api/building/assignment-building"/>
+<c:url var="userAPI" value="/api/users"/>
+
+
 <html>
 
 <head>
@@ -219,7 +221,7 @@
                                                                  class="form-control">
                                                         <form:option value=""
                                                                      label="---Chọn nhân viên---"/>
-                                                        <form:options items="${staffMaps}"/>
+                                                        <form:options items="${staffs}"/>
                                                     </form:select>
                                                 </div>
                                             </div>
@@ -244,8 +246,7 @@
                                     <button type="button" class="btn btn-sm btn-success"
                                             id="btnSearch">
                                         Tìm kiếm
-                                        <i
-                                                class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
+                                        <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
                                     </button>
                                 </div>
                             </div>
@@ -352,6 +353,8 @@
         openModalAssignmentBuilding();
         loadStaff(buildingId);
         $("#buildingId").val(buildingId); // set value cho buildingId
+
+        // check
         console.log("building id : " + $("#buildingId").val());
     }
 
@@ -359,14 +362,12 @@
         $("#buildingAssignmentModal").modal();
     }
 
-    //_ajax load danh sách nhân viên giao tòa nhà .
+    // load danh sách nhân viên quản lý tòa nhà
     function loadStaff(buildingId) {
         $.ajax({
             type: "GET",
-            url: "${buildingAPI}/" + buildingId + "/staffs",
-            //data: JSON.stringify(data),
+            url: "${userAPI}/staffs" + "?building_id=" + buildingId,
             dataType: "json",
-            //contentType: "application/json",
             success: function (response) {
                 console.log("success");
                 var row = '';
@@ -385,25 +386,23 @@
         });
     }
 
+    // Giao tòa nhà cho nhân viên quản lý.
     $("#btnAssignBuilding").click(function (e) {
         e.preventDefault();
         var data = {};
-        // buildingId đang là 1 hidden input , cho nên ta get value bằng cách này .
         data['buildingId'] = $("#buildingId").val();
-        // $('#staffList').find('tbody input[type=checkbox]:checked');
         var staffIdList = $('#staffList').find('tbody input[type=checkbox]:checked').map(function () {
             return $(this).val(); // đứng ở thằng modal - lấy tất cả value của checkbox có "checked"
         }).get();
         data['staffIdList'] = staffIdList;
-
-        // call api
         assignStaff(data);
     });
 
+    // Giao tòa nhà cho nhân viên quản lý.
     function assignStaff(data) {
         $.ajax({
             type: "POST",
-            url: "${assignmentAPI}",
+            url: "${userAPI}/assignment",
             data: JSON.stringify(data),
             dataType: "json",
             contentType: "application/json",
@@ -418,6 +417,7 @@
         });
     }
 
+    // request an array of building id
     $("#btnDelete").click(function (e) {
         showAlertBeforeDelete(function () {
             e.preventDefault();

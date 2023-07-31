@@ -1,6 +1,6 @@
 package com.laptrinhjavaweb.dto.respone;
 
-public class StaffResponeDTO {
+public class StaffResponseDTO {
     private String fullName;
     private Long staffId;
 /*    nếu staff quản lý tòa nhà id

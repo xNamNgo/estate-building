@@ -40,6 +40,9 @@
             <div class="row">
                 <div class="col-xs-12">
                     <form class="form-horizontal" role="form" id="formEdit">
+
+                        <input type="hidden" id="id" name="id" value="${building.id}">
+
                         <!-- Tên tòa nhà -->
                         <div class="form-group">
                             <label for="name" class="col-sm-1 control-label">Tên tòa nhà</label>
@@ -300,7 +303,6 @@
                             </div>
                         </div>
 
-                        <input type="hidden" id="id" name="id" value="${building.id}">
 
                         <div class="form-group">
                             <label for="linkOfBuilding" class="col-sm-1 control-label">Hình đại diện</label>
@@ -362,45 +364,17 @@
         window.location.href = "/admin/building-list";
     });
 
-    function saveBuilding(data) {
-        $.ajax({
-            type: "POST",
-            url: "${apiBuilding}",
-            data: JSON.stringify(data), // parse js object to json type.
-            dataType: "json", // server respone JSON.
-            contentType: "application/json", //client request to server JSON type
-            success: function (response) {
-                console.log("success");
-                alert("Thêm tòa nhà thành công!");
-                window.location.href = "/admin/building-list";
-            },
-            error: function (response) {
-                console.log("failed");
-                console.log(respone);
-            },
-        });
-    }
+    $("#btnAddBuilding").click(function () {
+        let data = getData();
+        saveBuilding(data);
+    });
 
-    function updateBuilding(data){
-        $.ajax({
-            type: "PUT",
-            url: "${apiBuilding}", // add the building ID as a parameter in the URL
-            data: JSON.stringify(data), // parse js object to json type.
-            dataType: "json", // server respone JSON.
-            contentType: "application/json", //client request to server JSON type
-            success: function (response) {
-                console.log("success");
-                alert("Cập nhật tòa nhà thành công!");
-                window.location.href = "/admin/building-list";
-            },
-            error: function (response) {
-                console.log("failed");
-                console.log(response);
-            },
-        });
-    }
+    $("#btnUpdateBuilding").click(function () {
+        let data = getData();
+        updateBuilding(data);
+    });
 
-    function getData(){
+    function getData() {
         // get "name","value" properties of html , id=formEdit
         var formData = $("#formEdit").serializeArray();
         var data = {}; // js obj - js dinationaryz
@@ -424,23 +398,51 @@
         return data;
     }
 
+
+    function saveBuilding(data) {
+        $.ajax({
+            type: "POST",
+            url: "${apiBuilding}",
+            data: JSON.stringify(data), // parse js object to json type.
+            dataType: "json", // server respone JSON.
+            contentType: "application/json", //client request to server JSON type
+            success: function (response) {
+                console.log("success");
+                alert("Thêm tòa nhà thành công!");
+                window.location.href = "/admin/building-list";
+            },
+            error: function (response) {
+                console.log("failed");
+                console.log(respone);
+            },
+        });
+    }
+
+    function updateBuilding(data) {
+        $.ajax({
+            type: "PUT",
+            url: "${apiBuilding}", // add the building ID as a parameter in the URL
+            data: JSON.stringify(data), // parse js object to json type.
+            dataType: "json", // server respone JSON.
+            contentType: "application/json", //client request to server JSON type
+            success: function (response) {
+                console.log("success");
+                alert("Cập nhật tòa nhà thành công!");
+                window.location.href = "/admin/building-list";
+            },
+            error: function (response) {
+                console.log("failed");
+                console.log(response);
+            },
+        });
+    }
+
     var imageBase64 = '';
     var imageName = '';
-
-    $("#btnAddBuilding").click(function () {
-        let data = getData();
-        saveBuilding(data);
-    });
-
-    $("#btnUpdateBuilding").click(function () {
-        let data = getData();
-        updateBuilding(data);
-    });
-
     $('#uploadImage').change(function (event) {
         var reader = new FileReader();
         var file = $(this)[0].files[0];
-        reader.onload = function(e){
+        reader.onload = function (e) {
             imageBase64 = e.target.result;
             imageName = file.name; // ten hinh khong dau, khoang cach. vd: a-b-c
         };
@@ -452,11 +454,12 @@
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
-                $('#' +imageView).attr('src', reader.result);
+                $('#' + imageView).attr('src', reader.result);
             }
             reader.readAsDataURL(input.files[0]);
         }
     }
+
 </script>
 </body>
 </html>

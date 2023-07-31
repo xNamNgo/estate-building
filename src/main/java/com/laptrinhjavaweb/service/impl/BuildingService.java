@@ -2,11 +2,11 @@ package com.laptrinhjavaweb.service.impl;
 
 import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
 import com.laptrinhjavaweb.converter.BuildingConverter;
-import com.laptrinhjavaweb.dto.BuildingSearchDTO;
+import com.laptrinhjavaweb.dto.BuildingSearchRequest;
 import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
-import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
-import com.laptrinhjavaweb.dto.respone.ResponeDTO;
-import com.laptrinhjavaweb.dto.respone.StaffResponeDTO;
+import com.laptrinhjavaweb.dto.request.BuildingSearchRespone;
+import com.laptrinhjavaweb.dto.respone.ResponseDTO;
+import com.laptrinhjavaweb.dto.respone.StaffResponseDTO;
 import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.RentAreaEntity;
 import com.laptrinhjavaweb.entity.UserEntity;
@@ -20,10 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BuildingService implements IBuildingService {
@@ -45,82 +47,34 @@ public class BuildingService implements IBuildingService {
         this.uploadFileUtils = uploadFileUtils;
     }
 
-    /**
-     * Load data ra table
-     *
-     * @param model : object chứa các field tìm kiếm
-     * @return danh sách đã tìm được .
-     */
     @Override
-    public List<BuildingRequestDTO> loadBuilding(Pageable page, BuildingSearchDTO model) {
-        List<BuildingRequestDTO> result = new ArrayList<>();
-
-        // convert ObjectDTO sang ObjectBuider để truyền xuống repository => Giải quyết bài toán nhiều tham số
+    public List<BuildingSearchRespone> loadBuilding(Pageable page, BuildingSearchRequest model) {
+        List<BuildingSearchRespone> result = new ArrayList<>();
         BuildingSearchBuilder builder = buildingConverter.convertToBuildingSearchBuilder(model);
         List<BuildingEntity> buildingEntities = buildingRepository.findByCondition(page, builder);
+
+        // convert từ entity -> dto
         for (BuildingEntity item : buildingEntities) {
-            BuildingRequestDTO buildingRequestDTO = buildingConverter.convertToDTO(item);
-            result.add(buildingRequestDTO);
+            BuildingSearchRespone buildingSearchRespone = buildingConverter.convertToDTO(item);
+            result.add(buildingSearchRespone);
         }
         return result;
     }
 
     @Override
-    public int countTotalItems(BuildingSearchDTO model) {
+    public int countTotalItems(BuildingSearchRequest model) {
         BuildingSearchBuilder builder = buildingConverter.convertToBuildingSearchBuilder(model);
         return buildingRepository.countTotalItem(builder);
     }
 
-
-    /*
-     * - Page load danh sách nhân viên quản lý tòa nhà .
-     * - Lấy danh sách tất cả nhân viên
-     * - kiểm tra nhân viên có nằm trong building không  - nếu có thì "checked"
-     * */
-    @Override
-    public ResponeDTO getListStaff(Long buildingId) {
-        // result
-        List<StaffResponeDTO> data = new ArrayList<>();
-
-        // danh sách tất cả nhân viên
-        List<UserEntity> userList = userRepository.findByStatusAndRoles_Code(1, "STAFF");
-
-        // danh sách nhân viên đã được giao tòa nhà .
-        // 1 building - n user , nên sẽ tìm n user bằng 1 building - cụ thể là building id.
-        // building(1) có 2 user (2,3) nên cần load ra ds user id 2,3
-        List<UserEntity> userAssignmentList = userRepository.findByBuildingId(buildingId);
-
-        // output ở client : load all danh sách nhân viên có role STAFF.
-        // nhân viên nào quản lý thì "checked" -
-        for (UserEntity user : userList) {
-            StaffResponeDTO staffResponeDTO = new StaffResponeDTO();
-            staffResponeDTO.setStaffId(user.getId());
-            staffResponeDTO.setFullName(user.getFullName());
-
-            // user được giao tòa nhà thì checked
-            boolean isAssigned = false;
-            for (UserEntity userAssignment : userAssignmentList) {
-                if (user.getId() == userAssignment.getId()) {
-                    isAssigned = true;
-                    break;
-                }
-            }
-
-            // check
-            staffResponeDTO.setChecked(isAssigned ? "checked" : "");
-
-            data.add(staffResponeDTO);
-        }
-        return new ResponeDTO(data, "success", "");
-    }
-
     // Save - Update building
     @Override
-    public BuildingRequestDTO save(BuildingRequestDTO buildingRequestDTO) {
-        BuildingEntity buildingEntity = buildingConverter.covertToBuildingEntity(buildingRequestDTO);
-        Long buildingId = buildingRequestDTO.getId();
-        //  Nếu đã tồn tại 1 building thì sẽ UPDATE.
-        // Đồng thời phải insert data của các child table để tránh bị mất data .
+    @Transactional
+    public BuildingSearchRespone save(BuildingSearchRespone buildingSearchRespone) {
+        BuildingEntity buildingEntity = buildingConverter.covertToBuildingEntity(buildingSearchRespone);
+        Long buildingId = buildingSearchRespone.getId();
+
+        //  Nếu đã tồn tại 1 building thì UPDATE.
         if (buildingId != null) {
             BuildingEntity foundBuilding = buildingRepository.findById(buildingId).orElseThrow(() -> new NotFoundException("Building not found!"));
             buildingEntity.setImage(foundBuilding.getImage());
@@ -131,30 +85,34 @@ public class BuildingService implements IBuildingService {
                 buildingEntity.setUsers(assignment);
             }
         }
-        saveThumbnail(buildingRequestDTO, buildingEntity);
-
-        // "400,500,600" parse to Int [400,500,600] - Integer
-        saveOrUpdateRentArea(buildingRequestDTO, buildingEntity);
+        saveThumbnail(buildingSearchRespone, buildingEntity);
+        saveRentArea(buildingSearchRespone, buildingEntity);
         return buildingConverter.convertToDTO(buildingRepository.save(buildingEntity));
     }
 
-    // 1 tòa nhà - n rentarea.
-    // Sử dụng cascade nên không cần phải .save rentarea .
-    private void saveOrUpdateRentArea(BuildingRequestDTO buildingRequestDTO, BuildingEntity buildingEntity) {
-        String rentAreaStr = buildingRequestDTO.getRentArea();
-        if (rentAreaStr != null) {
-            for (String value : rentAreaStr.split(",")) {
-                RentAreaEntity rentAreaEntity = new RentAreaEntity();
-                Integer valueParse = Integer.parseInt(value);
-                rentAreaEntity.setValue(valueParse);
-                rentAreaEntity.setBuilding(buildingEntity);
+
+    /**
+     * 1 building - n rentarea
+     * Saves rent areas from the provided BuildingSearchRespone into the given BuildingEntity.
+     *
+     * @param buildingSearchRespone The BuildingSearchRespone containing rent area information.
+     * @param buildingEntity        The BuildingEntity to which the rent areas will be saved.
+     */
+    private void saveRentArea(BuildingSearchRespone buildingSearchRespone, BuildingEntity buildingEntity) {
+        String rentAreaString = buildingSearchRespone.getRentArea();
+        if (rentAreaString != null) {
+            for (String value : rentAreaString.split(",")) {
+                RentAreaEntity currentRentArea = new RentAreaEntity();
+                Integer parsedValue = Integer.parseInt(value);
+                currentRentArea.setValue(parsedValue);
+                currentRentArea.setBuilding(buildingEntity);
                 //cascade
-                buildingEntity.addRentArea(rentAreaEntity);
+                buildingEntity.addRentArea(currentRentArea);
             }
         }
     }
 
-    private void saveThumbnail(BuildingRequestDTO buildingDTO, BuildingEntity buildingEntity) {
+    private void saveThumbnail(BuildingSearchRespone buildingDTO, BuildingEntity buildingEntity) {
         String path = "/building/" + buildingDTO.getImageName();
         if (null != buildingDTO.getImageBase64()) {
             if (null != buildingEntity.getImage()) {
@@ -169,12 +127,16 @@ public class BuildingService implements IBuildingService {
         }
     }
 
-    // delete building
+    /**
+     * xóa bảng FK trước rồi mới xóa bảng building
+     * Sử dụng cascade nên khi xóa building thì sẽ tự động xóa các bản reference đến building.
+     * riêng @ManyToMany không cần cascade để xóa bảng trung gian vì đã được  sẵn .
+     *
+     * @param idList list id building được tick vào.
+     */
     @Override
+    @Transactional
     public void delete(long[] idList) {
-        // xóa bảng FK trước rồi mới xóa bảng building
-        // Sử dụng cascade nên khi xóa building thì sẽ tự động xóa các bản reference đến building.
-        // riêng @ManyToMany không cần cascade để xóa bảng trung gian vì đã được handle .
         if (idList.length > 0) {
             Long count = buildingRepository.countByIdIn(idList);
             if (count != idList.length) {
@@ -191,25 +153,13 @@ public class BuildingService implements IBuildingService {
      * @return thông tin của tòa nhà , nếu không có thì sẽ là null .
      */
     @Override
-    public BuildingRequestDTO findById(Long id) {
-        BuildingRequestDTO result = new BuildingRequestDTO();
+    public BuildingSearchRespone findById(Long id) {
+        BuildingSearchRespone result = new BuildingSearchRespone();
         if (id != null) {
             result = buildingConverter.convertToDTO(buildingRepository.findOneById(id));
         }
         return result;
     }
 
-
-    // Giao tòa nhà cho nhân viên quản lý
-    public ResponeDTO saveAssignmentBuilding(AssignmentBuildingRequestDTO request) {
-        // data từ client truyền xuống.
-        Long buildingId = request.getBuildingId();
-        long[] staffIdList = request.getStaffIdList();
-        BuildingEntity buildingEntity = buildingRepository.findOneById(buildingId);
-        List<UserEntity> userEntities = userRepository.findByIdIn(staffIdList);
-        buildingEntity.setUsers(userEntities);
-        buildingRepository.save(buildingEntity);
-        return new ResponeDTO(null, "success", "Giao tòa nhà thành công!");
-    }
 }
 

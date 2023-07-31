@@ -1,12 +1,10 @@
 package com.laptrinhjavaweb.converter;
 
 import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
-import com.laptrinhjavaweb.dto.BuildingSearchDTO;
-import com.laptrinhjavaweb.dto.respone.BuildingRequestDTO;
+import com.laptrinhjavaweb.dto.BuildingSearchRequest;
+import com.laptrinhjavaweb.dto.request.BuildingSearchRespone;
 import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.RentAreaEntity;
-import com.laptrinhjavaweb.repository.BuildingRepository;
-import com.laptrinhjavaweb.service.impl.BuildingService;
 import com.laptrinhjavaweb.utils.GetDistrictUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +19,8 @@ public class BuildingConverter {
     @Autowired
     private ModelMapper modelMapper;
 
-    public BuildingRequestDTO convertToDTO(BuildingEntity entity) {
-        BuildingRequestDTO result = modelMapper.map(entity, BuildingRequestDTO.class);
+    public BuildingSearchRespone convertToDTO(BuildingEntity entity) {
+        BuildingSearchRespone result = modelMapper.map(entity, BuildingSearchRespone.class);
 
         // output "Địa chỉ"
         Map<String, String> districts = GetDistrictUtils.getDistrictMap();
@@ -43,31 +41,31 @@ public class BuildingConverter {
     }
 
     // builder pattern
-    public BuildingSearchBuilder convertToBuildingSearchBuilder(BuildingSearchDTO buildingSearchDTO) {
-        BuildingSearchBuilder result = new BuildingSearchBuilder.Builder().setName(buildingSearchDTO.getName()) // tên tòa nhà
-                                                                          .setFloorArea(buildingSearchDTO.getFloorArea()) // diện tích sàn
-                                                                          .setDistrict(buildingSearchDTO.getDistrict()) // quận
-                                                                          .setWard(buildingSearchDTO.getWard()) // phường
-                                                                          .setStreet(buildingSearchDTO.getStreet()) // đường
-                                                                          .setNumberOfBasement(buildingSearchDTO.getNumberOfBasement()) // số tầng hầm
-                                                                          .setDirection(buildingSearchDTO.getDirection()) // hướng
-                                                                          .setLevel(buildingSearchDTO.getLevel()) // hạng
-                                                                          .setRentAreaFrom(buildingSearchDTO.getRentAreaFrom()) // diện tích từ
-                                                                          .setRentAreaTo(buildingSearchDTO.getRentAreaTo()) // diện tích đến
-                                                                          .setCostRentFrom(buildingSearchDTO.getCostRentFrom()) // giá thuê từ
-                                                                          .setCostRentTo(buildingSearchDTO.getCostRentTo()) // giá thuê đến
-                                                                          .setManagerName(buildingSearchDTO.getManagerName()) // tên quản lý
-                                                                          .setPhoneNumber(buildingSearchDTO.getPhoneNumber()) // số điện thoại quản lý
-                                                                          .setStaffId(buildingSearchDTO.getStaffId()) // nhân viên phụ trách
-                                                                          .setTypes(buildingSearchDTO.getTypes()) // loại tòa nhà [TANG_TRET,NGUYEN_CAN,NOI_THAT]
+    public BuildingSearchBuilder convertToBuildingSearchBuilder(BuildingSearchRequest buildingSearchRequest) {
+        BuildingSearchBuilder result = new BuildingSearchBuilder.Builder().setName(buildingSearchRequest.getName())
+                                                                          .setFloorArea(buildingSearchRequest.getFloorArea())
+                                                                          .setDistrict(buildingSearchRequest.getDistrict())
+                                                                          .setWard(buildingSearchRequest.getWard())
+                                                                          .setStreet(buildingSearchRequest.getStreet())
+                                                                          .setNumberOfBasement(buildingSearchRequest.getNumberOfBasement())
+                                                                          .setDirection(buildingSearchRequest.getDirection())
+                                                                          .setLevel(buildingSearchRequest.getLevel())
+                                                                          .setRentAreaFrom(buildingSearchRequest.getRentAreaFrom())
+                                                                          .setRentAreaTo(buildingSearchRequest.getRentAreaTo())
+                                                                          .setCostRentFrom(buildingSearchRequest.getCostRentFrom())
+                                                                          .setCostRentTo(buildingSearchRequest.getCostRentTo())
+                                                                          .setManagerName(buildingSearchRequest.getManagerName())
+                                                                          .setPhoneNumber(buildingSearchRequest.getPhoneNumber())
+                                                                          .setStaffId(buildingSearchRequest.getStaffId())
+                                                                          .setTypes(buildingSearchRequest.getTypes()) // loại tòa nhà [TANG_TRET,NGUYEN_CAN,NOI_THAT]
                                                                           .build();
         return result;
     }
 
-    public BuildingEntity covertToBuildingEntity(BuildingRequestDTO buildingRequestDTO) {
-        BuildingEntity buildingEntity = modelMapper.map(buildingRequestDTO, BuildingEntity.class);
+    public BuildingEntity covertToBuildingEntity(BuildingSearchRespone buildingSearchRespone) {
+        BuildingEntity buildingEntity = modelMapper.map(buildingSearchRespone, BuildingEntity.class);
 
-        String type = String.join(",", buildingRequestDTO.getTypes());
+        String type = String.join(",", buildingSearchRespone.getTypes());
         buildingEntity.setType(type);
 
 
