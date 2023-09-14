@@ -1,8 +1,6 @@
 package com.laptrinhjavaweb.api.admin;
 
-import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
 import com.laptrinhjavaweb.dto.request.BuildingSearchRespone;
-import com.laptrinhjavaweb.dto.respone.ResponseDTO;
 import com.laptrinhjavaweb.service.IBuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

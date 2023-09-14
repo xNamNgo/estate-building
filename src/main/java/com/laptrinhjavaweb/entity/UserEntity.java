@@ -31,6 +31,9 @@ public class UserEntity extends BaseEntity {
     @ManyToMany(mappedBy = "users")
     private List<BuildingEntity> building;
 
+    @ManyToMany(mappedBy = "staff")
+    List<CustomerEntity> customers = new ArrayList<>();
+
     public String getUserName() {
         return userName;
     }

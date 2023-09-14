@@ -6,20 +6,16 @@
         try{ace.settings.loadState('sidebar')}catch(e){}
     </script>
     <ul class="nav nav-list">
-        <li class="">
-            <a href="#" class="dropdown-toggle">
+        <li class="nav-item">
+            <a href='<c:url value='/admin/building-list'/>'>
                 <span class="menu-text">Quản lý tòa nhà</span>
-                <b class="arrow fa fa-angle-down"></b>
             </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-                <li class="">
-                    <a href='<c:url value='/admin/building-list'/>'>
-                        Danh sách tòa nhà
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a href='<c:url value='/admin/customer-list'/>'>
+                <span class="menu-text">Quản lý khách hàng</span>
+            </a>
         </li>
     </ul>
     <div class="sidebar-toggle sidebar-collapse">

@@ -1,9 +1,7 @@
 package com.laptrinhjavaweb.service;
 
 import com.laptrinhjavaweb.dto.BuildingSearchRequest;
-import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
 import com.laptrinhjavaweb.dto.request.BuildingSearchRespone;
-import com.laptrinhjavaweb.dto.respone.ResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

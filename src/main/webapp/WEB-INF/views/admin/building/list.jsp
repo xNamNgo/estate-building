@@ -8,7 +8,7 @@
 <html>
 
 <head>
-    <title>Title</title>
+    <title>Quản lý tòa nhà</title>
 </head>
 
 <body>

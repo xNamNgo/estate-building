@@ -1,6 +1,4 @@
-package com.laptrinhjavaweb.dto.request;
-
-import com.laptrinhjavaweb.dto.AbstractDTO;
+package com.laptrinhjavaweb.dto;
 
 public class CustomerDTO extends AbstractDTO {
     private String fullName;
@@ -9,7 +7,27 @@ public class CustomerDTO extends AbstractDTO {
     private String companyName;
     private String need;
     private String note;
-    private Integer staffId;
+    private Long staffId;
+    private String staffName;
+    private boolean status;
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public CustomerDTO setStatus(boolean status) {
+        this.status = status;
+        return this;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public CustomerDTO setStaffName(String staffName) {
+        this.staffName = staffName;
+        return this;
+    }
 
     public CustomerDTO() {
     }
@@ -68,11 +86,11 @@ public class CustomerDTO extends AbstractDTO {
         return this;
     }
 
-    public Integer getStaffId() {
+    public Long getStaffId() {
         return staffId;
     }
 
-    public CustomerDTO setStaffId(Integer staffId) {
+    public CustomerDTO setStaffId(Long staffId) {
         this.staffId = staffId;
         return this;
     }

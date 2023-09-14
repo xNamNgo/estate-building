@@ -11,6 +11,9 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findOneByUserNameAndStatus(String name, int status);
 
+    List<UserEntity> findByCustomers_Id(Long id);
+
+
     Page<UserEntity> findByUserNameContainingIgnoreCaseOrFullNameContainingIgnoreCaseAndStatusNot(String userName, String fullName, int status,
                                                                                                   Pageable pageable);
 

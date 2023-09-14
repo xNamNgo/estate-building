@@ -3,10 +3,7 @@ package com.laptrinhjavaweb.service.impl;
 import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
 import com.laptrinhjavaweb.converter.BuildingConverter;
 import com.laptrinhjavaweb.dto.BuildingSearchRequest;
-import com.laptrinhjavaweb.dto.request.AssignmentBuildingRequestDTO;
 import com.laptrinhjavaweb.dto.request.BuildingSearchRespone;
-import com.laptrinhjavaweb.dto.respone.ResponseDTO;
-import com.laptrinhjavaweb.dto.respone.StaffResponseDTO;
 import com.laptrinhjavaweb.entity.BuildingEntity;
 import com.laptrinhjavaweb.entity.RentAreaEntity;
 import com.laptrinhjavaweb.entity.UserEntity;
@@ -25,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BuildingService implements IBuildingService {

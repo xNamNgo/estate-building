@@ -48,10 +48,12 @@ public class BuildingController {
     public ModelAndView buildingAddPage(@RequestParam(name = "building_id", required = false) Long id) {
         ModelAndView mav = new ModelAndView("admin/building/edit");
         if (id != null) {
-            mav.addObject("districts", GetDistrictUtils.getDistrictMap());
-            mav.addObject("types", GetTypeUtils.getTypeMap());
             mav.addObject("building", buildingService.findById(id));
+        } else {
+            mav.addObject("building", new BuildingSearchRespone());
         }
+        mav.addObject("districts", GetDistrictUtils.getDistrictMap());
+        mav.addObject("types", GetTypeUtils.getTypeMap());
         return mav;
     }
 
