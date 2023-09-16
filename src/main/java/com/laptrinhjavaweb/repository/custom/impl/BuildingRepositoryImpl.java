@@ -51,7 +51,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     private StringBuilder buildSqlJoining(BuildingSearchBuilder builder, StringBuilder sql) {
         Long rentAreaFrom = builder.getRentAreaFrom();
         Long rentAreaTo = builder.getRentAreaTo();
-        Integer staffId = builder.getStaffId();
+        Long staffId = builder.getStaffId();
         if (rentAreaFrom != null || rentAreaTo != null) {
             sql.append(" join rent_area as ra on ra.building_id = b.id");
         }
@@ -91,7 +91,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     }
 
     private StringBuilder buildSqlSpecial(BuildingSearchBuilder builder, StringBuilder sql) {
-        Integer staffId = builder.getStaffId();
+        Long staffId = builder.getStaffId();
         Long rentAreaFrom = builder.getRentAreaFrom();
         Long rentAreaTo = builder.getRentAreaTo();
         Long costRentFrom = builder.getCostRentFrom();

@@ -19,7 +19,7 @@ public class BuildingSearchBuilder {
     private Long costRentTo;
     private String manager_name;
     private String phone_number;
-    private Integer staffId;
+    private Long staffId;
     private List<String> types;
 
     public String getName() {
@@ -134,11 +134,11 @@ public class BuildingSearchBuilder {
         this.phone_number = phoneNumber;
     }
 
-    public Integer getStaffId() {
+    public Long getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(Integer staffId) {
+    public void setStaffId(Long staffId) {
         this.staffId = staffId;
     }
 
@@ -184,7 +184,7 @@ public class BuildingSearchBuilder {
         private Long costRentTo;
         private String managerName;
         private String phoneNumber;
-        private Integer staffId;
+        private Long staffId;
         private List<String> types = new ArrayList<>();
 
         public Builder setName(String name) {
@@ -257,7 +257,7 @@ public class BuildingSearchBuilder {
             return this;
         }
 
-        public Builder setStaffId(Integer staffId) {
+        public Builder setStaffId(Long staffId) {
             this.staffId = staffId;
             return this;
         }

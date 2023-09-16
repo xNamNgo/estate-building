@@ -17,7 +17,7 @@ public class BuildingSearchRequest extends AbstractDTO {
     private Long costRentTo;
     private String managerName; // join
     private String phoneNumber; // join
-    private Integer staffId; // join
+    private Long staffId; // join
     private List<String> types;
 
     public List<String> getTypes() {
@@ -141,11 +141,11 @@ public class BuildingSearchRequest extends AbstractDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getStaffId() {
+    public Long getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(Integer staffId) {
+    public void setStaffId(Long staffId) {
         this.staffId = staffId;
     }
 }
