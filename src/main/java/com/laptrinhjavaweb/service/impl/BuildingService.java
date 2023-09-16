@@ -10,6 +10,7 @@ import com.laptrinhjavaweb.entity.UserEntity;
 import com.laptrinhjavaweb.repository.BuildingRepository;
 import com.laptrinhjavaweb.repository.RentAreaRepository;
 import com.laptrinhjavaweb.repository.UserRepository;
+import com.laptrinhjavaweb.security.utils.SecurityUtils;
 import com.laptrinhjavaweb.service.IBuildingService;
 import com.laptrinhjavaweb.utils.UploadFileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -46,6 +47,9 @@ public class BuildingService implements IBuildingService {
     @Override
     public List<BuildingSearchRespone> loadBuilding(Pageable page, BuildingSearchRequest model) {
         List<BuildingSearchRespone> result = new ArrayList<>();
+        if (SecurityUtils.getAuthorities().contains("ROLE_STAFF")) {
+            model.setStaffId(SecurityUtils.getPrincipal().getId());
+        }
         BuildingSearchBuilder builder = buildingConverter.convertToBuildingSearchBuilder(model);
         List<BuildingEntity> buildingEntities = buildingRepository.findByCondition(page, builder);
 

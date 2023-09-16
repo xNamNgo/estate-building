@@ -83,22 +83,23 @@
                             </div>
                         </div>
 
-
-                        <div class="row">
-                            <div class="col-xs-4" style="margin-top: 10px">
-                                <label class="col-sm-112 no-padding-left">
-                                    <b>Chọn nhân viên phụ trách</b>
-                                </label>
-                                <div class="form-group">
-                                    <div class="col-sm-6">
-                                        <form:select path="staffId" class="form-control">
-                                            <form:option value="" label="---Chọn nhân viên phụ trách---" />
-                                            <form:options items="${staffs}" />
-                                        </form:select>
+                        <security:authorize access="hasRole('MANAGER')">
+                            <div class="row">
+                                <div class="col-xs-4" style="margin-top: 10px">
+                                    <label class="col-sm-112 no-padding-left">
+                                        <b>Chọn nhân viên phụ trách</b>
+                                    </label>
+                                    <div class="form-group">
+                                        <div class="col-sm-6">
+                                            <form:select path="staffId" class="form-control">
+                                                <form:option value="" label="---Chọn nhân viên phụ trách---" />
+                                                <form:options items="${staffs}" />
+                                            </form:select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </security:authorize>
 
                         <div style="margin-top: 25px; margin-left: 8px">
                             <button type="button" class="btn btn-sm btn-success" id="btnSearch">

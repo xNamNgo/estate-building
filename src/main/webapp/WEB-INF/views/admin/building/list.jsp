@@ -211,21 +211,24 @@
                                         </div>
 
                                             <%-- //_client: load nhân viên phụ trách--%>
-                                        <div class="col-xs-4" style="margin-top: 10px">
-                                            <label class="col-sm-112 no-padding-left">
-                                                <b>Chọn nhân viên phụ trách</b>
-                                            </label>
-                                            <div class="form-group">
-                                                <div class="col-sm-6">
-                                                    <form:select path="staffId"
-                                                                 class="form-control">
-                                                        <form:option value=""
-                                                                     label="---Chọn nhân viên---"/>
-                                                        <form:options items="${staffs}"/>
-                                                    </form:select>
+                                        <security:authorize access="hasRole('MANAGER')">
+                                            <div class="col-xs-4" style="margin-top: 10px">
+                                                <label class="col-sm-112 no-padding-left">
+                                                    <b>Chọn nhân viên phụ trách</b>
+                                                </label>
+                                                <div class="form-group">
+                                                    <div class="col-sm-6">
+                                                        <form:select path="staffId"
+                                                                     class="form-control">
+                                                            <form:option value=""
+                                                                         label="---Chọn nhân viên---"/>
+                                                            <form:options items="${staffs}"/>
+                                                        </form:select>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </security:authorize>
+
 
                                     </div>
                                 </div>

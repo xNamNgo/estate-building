@@ -16,10 +16,14 @@ import com.laptrinhjavaweb.entity.UserEntity;
 import com.laptrinhjavaweb.repository.CustomerRepository;
 import com.laptrinhjavaweb.repository.TransactionRepository;
 import com.laptrinhjavaweb.repository.UserRepository;
+import com.laptrinhjavaweb.security.utils.SecurityUtils;
 import com.laptrinhjavaweb.service.ICustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,21 +34,20 @@ import java.util.Optional;
 @Service
 public class CustomerServiceImpl implements ICustomerService {
 
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private CustomerConverter customerConverter;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TransactionRepository transactionRepository;
-    @Autowired
-    private TransactionConverter transactionConverter;
+    @Autowired private CustomerRepository customerRepository;
+    @Autowired private CustomerConverter customerConverter;
+    @Autowired private UserRepository userRepository;
+    @Autowired private TransactionRepository transactionRepository;
+    @Autowired private TransactionConverter transactionConverter;
 
     @Override
     public List<CustomerDTO> loadCustomer(Pageable page, CustomerDTO customerDTO) {
+        if (SecurityUtils.getAuthorities().contains("ROLE_STAFF")) {
+            customerDTO.setStaffId(SecurityUtils.getPrincipal().getId());
+        }
         List<CustomerDTO> result = new ArrayList<>();
         CustomerBuilder customerBuilder = customerConverter.convertToBuilder(customerDTO);
+
         List<CustomerEntity> customerEntities = customerRepository.findByCondition(page, customerBuilder);
 
         for (CustomerEntity entity : customerEntities) {
