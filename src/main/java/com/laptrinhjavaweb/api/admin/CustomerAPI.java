@@ -17,14 +17,14 @@ public class CustomerAPI {
     @Autowired ICustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<CustomerDTO> createBuilding(@RequestBody CustomerDTO customer) {
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customer) {
         ResponseEntity<CustomerDTO> response = ResponseEntity.ok(customerService.save(customer));
         return response;
     }
 
     // Xóa tòa nhà
     @DeleteMapping
-    public ResponseEntity<Void> deleteBuilding(@RequestBody long[] idList) {
+    public ResponseEntity<Void> deleteCustomer(@RequestBody long[] idList) {
         if (idList.length > 0) {
             customerService.delete(idList);
         }
@@ -41,7 +41,7 @@ public class CustomerAPI {
     }
 
     @PostMapping("/assignment")
-    public ResponseDTO saveAssignmentBuilding(
+    public ResponseDTO saveAssignmentCustomer(
             @RequestBody AssignmentCustomerDTO assignmentRequest) {
         ResponseDTO result = customerService.saveAssignmentCustomer(assignmentRequest);
         return result;
